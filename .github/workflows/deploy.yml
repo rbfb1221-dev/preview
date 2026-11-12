@@ -1,0 +1,36 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      # без -v: логи публичного репозитория не должны показывать имена файлов
+      - run: |
+          mkdir out
+          cat site.* | openssl enc -d -aes-256-cbc -pbkdf2 -pass env:SITE_KEY | tar -xf - -C out
+          chmod -R a+rX out
+          tar -cf artifact.tar -C out .
+        env:
+          SITE_KEY: ${{ secrets.SITE_KEY }}
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: artifact.tar
+          retention-days: 1
+      - uses: actions/deploy-pages@v4
+      # артефакт публичного репозитория может скачать кто угодно — после выкладки удаляем
+      - if: always()
+        run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/${{ steps.upload.outputs.artifact-id }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
