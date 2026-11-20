@@ -143,12 +143,15 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
 .notification h3, .visit-card h3 { margin-bottom: 13px; }
 .notification pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; font: 1rem/1.55 "Segoe UI", Arial, sans-serif; color: var(--ink); }
 .notification img { margin-top: 12px; width: min(200px, 100%); height: auto; max-height: 120px; }
-.services-section { background: #eee7da; }
-.services { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.service { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(17px, 3vw, 32px); border-radius: 13px; border: 1px solid var(--line); background: var(--panel); }
-.service h3 { margin: 13px 0 4px; font-size: 1.26rem; }
-.service p { margin: 0 0 15px; color: var(--muted); line-height: 1.45; }
-.service a { margin-top: auto; color: var(--active); font-weight: 670; text-underline-offset: 4px; }
+.services-section { background: #eee7da; padding-block: clamp(30px, 5vw, 65px); scroll-margin-top: 15px; }
+.services-section h2 { font-size: clamp(2rem, 3.9vw, 3.45rem); }
+.services { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.service { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(13px, 2vw, 23px); border: 1px solid var(--line); border-radius: 13px; background: var(--panel); text-decoration: none; }
+.service:hover { border-color: var(--active); }
+.service h3 { margin: 10px 0 5px; font-size: clamp(1rem, 1.5vw, 1.23rem); line-height: 1.2; }
+.service p { margin-bottom: 12px; color: var(--muted); font-size: .94rem; line-height: 1.4; }
+.service-action { margin-top: auto; color: var(--active); font-size: .875rem; font-weight: 670; }
+.service:hover .service-action { text-decoration: underline; text-underline-offset: 4px; }
 .questions { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(20px, 5vw, 64px); }
 .questions details { padding: 15px 0; border-bottom: 1px solid var(--line); }
 .questions details:first-child { border-top: 1px solid var(--line); }
@@ -206,7 +209,8 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
   .diagram-grid { min-height: 110px; }
   .window-frame { width: min(163px, 75%); }
   .form-contact { border-top: none; }
-  .demo-layout, .questions, .services { grid-template-columns: 1fr; }
+  .demo-layout, .questions { grid-template-columns: 1fr; }
+  .services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .footer .wrap { font-size: .82rem; }
 }
 
@@ -214,6 +218,7 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
   h1 { font-size: clamp(2.78rem, 14vw, 3.3rem); }
   .option { grid-template-columns: 1fr; padding: 8px; }
   .option small { font-size: .81rem; }
+  .service { padding: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -247,6 +252,18 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
         </div>
       </section>
 
+      <section class="services-section" id="services" aria-labelledby="services-title">
+        <div class="wrap">
+          <div class="section-head"><h2 id="services-title">Что ремонтируем</h2><p>Узнали свою ситуацию? Нажмите на карточку, и калькулятор подставит нужный вариант.</p></div>
+          <div class="services">
+            <a class="service" href="#calculate" data-service="closing"><span class="symbol sash" aria-hidden="true"></span><h3>Створки</h3><p>Окно задевает раму или закрывается с усилием.</p><span class="service-action">Выбрать в расчёте</span></a>
+            <a class="service" href="#calculate" data-service="draft"><span class="symbol seal" aria-hidden="true"></span><h3>Прижим и уплотнение</h3><p>От закрытого окна тянет холодом или слышен свист.</p><span class="service-action">Выбрать в расчёте</span></a>
+            <a class="service" href="#calculate" data-service="handle"><span class="symbol handle" aria-hidden="true"></span><h3>Ручки и фурнитуру</h3><p>Ручка болтается, заедает или не поворачивается.</p><span class="service-action">Выбрать в расчёте</span></a>
+            <a class="service" href="#calculate" data-service="other"><span class="symbol other" aria-hidden="true">?</span><h3>Другие неисправности</h3><p>Створка повисла на одной петле или окно не держится открытым.</p><span class="service-action">Описать проблему</span></a>
+          </div>
+        </div>
+      </section>
+
       <section id="calculate" class="section wrap calculator" aria-labelledby="calculator-title">
         <div class="section-head">
           <div><p class="eyebrow">Калькулятор ремонта</p><h2 id="calculator-title">Что с окном?</h2></div>
@@ -260,7 +277,7 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
                 <label class="option"><input type="radio" name="service" value="closing" checked><span class="symbol sash" aria-hidden="true"></span><span><strong>Плохо закрывается</strong><small>Створка задевает раму</small></span></label>
                 <label class="option"><input type="radio" name="service" value="draft"><span class="symbol seal" aria-hidden="true"></span><span><strong>Дует из окна</strong><small>Сквозняк при закрытой створке</small></span></label>
                 <label class="option"><input type="radio" name="service" value="handle"><span class="symbol handle" aria-hidden="true"></span><span><strong>Сломалась ручка</strong><small>Люфтит или заедает</small></span></label>
-                <label class="option"><input type="radio" name="service" value="other"><span class="symbol other" aria-hidden="true">?</span><span><strong>Другая проблема</strong><small>Мастер уточнит детали</small></span></label>
+                <label class="option"><input type="radio" name="service" value="other"><span class="symbol other" aria-hidden="true">?</span><span><strong>Другая проблема</strong><small>Например, створка повисла на одной петле</small></span></label>
               </div>
             </fieldset>
             <div class="quantity-row">
@@ -293,16 +310,16 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
               <input name="phone" id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 900 000-00-00" required>
             </label>
             <button type="button" id="fill-demo" class="text-button demo-only">Подставить тестовый номер</button>
-            <details class="extra-fields">
-              <summary>Добавить адрес и пожелания по выезду</summary>
+            <details class="extra-fields" id="lead-details">
+              <summary>Добавить описание, адрес и время</summary>
+              <label class="field">Что случилось с окном
+                <textarea name="note" rows="2" maxlength="300" placeholder="Например, створка повисла на одной петле"></textarea>
+              </label>
               <label class="field">Район или адрес
                 <input name="district" type="text" maxlength="80" placeholder="Например, Советский район">
               </label>
               <label class="field">Когда удобно
                 <input name="visit" type="text" maxlength="80" placeholder="Например, в будни после 18:00">
-              </label>
-              <label class="field">Комментарий
-                <textarea name="note" rows="2" maxlength="300" placeholder="Уточните, что заметили"></textarea>
               </label>
             </details>
           </div>
@@ -317,6 +334,11 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
             <button type="submit" class="button dark" id="submit" disabled>Оставить заявку</button>
             <p class="form-help live-only">Мастер свяжется с вами по указанному номеру.</p>
             <p class="form-feedback" id="feedback" role="status" aria-live="polite" hidden></p>
+            <div id="max-test" class="demo-only" hidden>
+              <button type="button" class="text-button" id="send-max-test">Отправить тест в MAX</button>
+              <p class="form-help">Тест отправляет выбранную проблему, расчёт и вымышленный номер.</p>
+              <p id="max-test-result" class="form-feedback" role="status" hidden></p>
+            </div>
             <a class="text-button live-only" id="receipt-link" href="#receipt" hidden>Открыть статус заявки</a>
             <noscript><p class="form-help">Для расчёта и отправки заявки включите JavaScript.</p></noscript>
           </div>
@@ -336,17 +358,6 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
             </form>
           </div>
         </section>
-      </section>
-
-      <section class="services-section section" id="services" aria-labelledby="services-title">
-        <div class="wrap">
-          <div class="section-head"><h2 id="services-title">Что ремонтируем</h2></div>
-          <div class="services">
-            <article class="service"><span class="symbol sash" aria-hidden="true"></span><h3>Створки</h3><p>Регулируем окно, которое провисло, задевает раму или закрывается с усилием.</p><a href="#calculate" data-service="closing">Рассчитать регулировку</a></article>
-            <article class="service"><span class="symbol seal" aria-hidden="true"></span><h3>Уплотнение</h3><p>Проверяем прижим и уплотнитель, если возле закрытого окна чувствуется сквозняк.</p><a href="#calculate" data-service="draft">Рассчитать устранение сквозняка</a></article>
-            <article class="service"><span class="symbol handle" aria-hidden="true"></span><h3>Ручки и фурнитуру</h3><p>Разбираемся с ручкой, которая разболталась, заедает или перестала поворачиваться.</p><a href="#calculate" data-service="handle">Рассчитать замену ручки</a></article>
-          </div>
-        </div>
       </section>
 
       <section id="questions" class="section wrap questions" aria-labelledby="questions-title">
@@ -435,12 +446,16 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
 
 const { serviceFor, estimate, describeCount, normalizePhone, leadMessage } = globalThis.windowCalculator;
 const isLive = document.documentElement.dataset.submitMode === "live";
+const isPagesMaxTest = !isLive && location.origin === "https://rbfb1221-dev.github.io"
+  && location.pathname === "/preview/okno-v-poryadke/"
+  && new URLSearchParams(location.search).get("test-max") === "1";
 const form = document.querySelector("#lead-form");
 const service = form.elements.service;
 const quantity = form.elements.quantity;
 const phone = form.elements.phone;
 const district = form.elements.district;
 const note = form.elements.note;
+const leadDetails = document.querySelector("#lead-details");
 const visit = form.elements.visit;
 const photo = form.elements.photo;
 const estimateOutput = document.querySelector("#estimate");
@@ -639,10 +654,14 @@ form.addEventListener("input", () => {
   messagePreview.hidden = true;
   showEstimate();
 });
+form.addEventListener("change", (event) => {
+  if (event.target.name === "service" && service.value === "other") leadDetails.open = true;
+});
 
 for (const link of document.querySelectorAll("[data-service]")) {
   link.addEventListener("click", () => {
     service.value = link.dataset.service;
+    if (service.value === "other") leadDetails.open = true;
     feedback.hidden = true;
     messagePreview.hidden = true;
     showEstimate();
@@ -746,6 +765,53 @@ form.addEventListener("submit", async (event) => {
 showEstimate();
 submit.disabled = false;
 if (isLive) openLiveReceipt();
+
+if (isPagesMaxTest) {
+  document.querySelector("#max-test").hidden = false;
+  const testButton = document.querySelector("#send-max-test");
+  const result = document.querySelector("#max-test-result");
+  testButton.addEventListener("click", async () => {
+    const selected = serviceFor(service.value);
+    const quantity = count();
+    const reference = crypto.randomUUID().slice(0, 8);
+    testButton.disabled = true;
+    result.hidden = false;
+    result.textContent = "Отправляем тест…";
+    try {
+      const response = await fetch("https://functions.yandexcloud.net/d4ev0kithkpk2jm0h6fn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          site: "okno-v-poryadke",
+          type: "quiz",
+          name: "ТЕСТ · Окно в порядке",
+          phone: "+79000000000",
+          website: "",
+          fields: [
+            ["Проверка", `GitHub Pages · ${reference}`],
+            ["Проблема", selected.title],
+            ["Объём", describeCount(quantity)],
+            ["Оценка", estimate(selected, quantity)],
+          ],
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+      const data = await response.json().catch(() => null);
+      if (response.ok && data?.sent === true) {
+        result.dataset.kind = "success";
+        result.textContent = `Обработчик подтвердил отправку в MAX. Код теста ${reference}.`;
+        return;
+      }
+      result.textContent = response.ok
+        ? `Обработчик не подтвердил отправку в MAX. Код теста ${reference}.`
+        : `Обработчик вернул ошибку HTTP ${response.status}. Код теста ${reference}.`;
+    } catch {
+      result.textContent = `Не удалось получить ответ обработчика. Код теста ${reference}.`;
+    }
+    result.dataset.kind = "error";
+    testButton.disabled = false;
+  });
+}
 
 </script>
 </body>
