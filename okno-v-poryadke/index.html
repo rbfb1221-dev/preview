@@ -345,18 +345,9 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
         </form>
 
         <section class="demo-panel demo-only" id="message-preview" aria-labelledby="demo-title" hidden>
-          <div class="section-head"><div><p class="eyebrow">Демонстрация</p><h2 id="demo-title">Заявка и выезд</h2></div><p>Так мастер получает заявку и согласует выезд. Данные демо остаются в этой вкладке.</p></div>
-          <div class="demo-layout">
-            <div class="notification"><h3>Сообщение в MAX</h3><pre id="message-text"></pre><img id="message-photo" alt="Фото окна в тестовой заявке" hidden></div>
-            <form class="visit-card" id="demo-confirm">
-              <h3>Подтвердить выезд</h3>
-              <label class="field">Согласованная цена, ₽<input name="price" type="number" min="1" max="500000" inputmode="numeric" required></label>
-              <label class="field">Дата и время<input name="appointment" type="datetime-local" required></label>
-              <button class="button dark" type="submit">Подтвердить выезд</button>
-              <p role="status" id="demo-status" class="form-help">Клиент ждёт согласования.</p>
-              <a id="demo-receipt-link" class="text-button" href="#receipt" hidden>Открыть статус клиента</a>
-            </form>
-          </div>
+          <h2 id="demo-title">Пример заявки в MAX</h2>
+          <p>Мастер увидит данные заявки и перезвонит клиенту. Здесь показан пример с данными из формы.</p>
+          <div class="notification"><pre id="message-text"></pre><img id="message-photo" alt="Фото окна в тестовой заявке" hidden></div>
         </section>
       </section>
 
@@ -364,7 +355,7 @@ fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
         <h2 id="questions-title">Частые вопросы</h2>
         <div>
           <details><summary>От чего зависит окончательная цена?</summary><p>От состояния створки, причины поломки и стоимости деталей. Точную цену мастер согласует после осмотра.</p></details>
-          <details><summary>Что происходит после заявки?</summary><p>Мастер получает заявку в MAX, связывается с вами и уточняет цену и время выезда. В рабочей версии их можно посмотреть по ссылке на статус.</p></details>
+          <details><summary>Что происходит после заявки?</summary><p>Мастер получает заявку в MAX, связывается с вами и уточняет цену и время выезда.</p></details>
           <details><summary>Обязательно прикладывать фото?</summary><p>Фото поможет мастеру понять, что сломалось. Заявку можно отправить и без него.</p></details>
         </div>
       </section>
@@ -467,11 +458,8 @@ const submit = document.querySelector("#submit");
 const messagePreview = document.querySelector("#message-preview");
 const diagram = document.querySelector("#window-diagram");
 const receipt = document.querySelector("#receipt");
-const demoConfirm = document.querySelector("#demo-confirm");
-const demoReceiptLink = document.querySelector("#demo-receipt-link");
 const formatNumber = new Intl.NumberFormat("ru-RU");
 let imageUrl = "";
-let demoRequest = null;
 let pending = false;
 let lastAttempt = null;
 
@@ -539,9 +527,9 @@ document.querySelector("#remove-photo").addEventListener("click", () => {
   messagePreview.hidden = true;
 });
 
-function showReceipt(data, isDemo = false) {
+function showReceipt(data) {
   receipt.hidden = false;
-  document.querySelector("#receipt-kind").textContent = isDemo ? "Тестовый статус клиента" : "Статус заявки";
+  document.querySelector("#receipt-kind").textContent = "Статус заявки";
   document.querySelector("#receipt-title").textContent = data.appointment ? "Выезд подтверждён" : "Заявка принята";
   document.querySelector("#receipt-detail").textContent = data.appointment
     ? `${data.title} · ${data.quantity}`
@@ -554,17 +542,6 @@ function showReceipt(data, isDemo = false) {
   }
 }
 
-demoConfirm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (!demoRequest) return;
-  showReceipt({
-    ...demoRequest,
-    price: Number(demoConfirm.elements.price.value),
-    appointment: demoConfirm.elements.appointment.value,
-  }, true);
-  document.querySelector("#demo-status").textContent = "Цена и время появились в статусе клиента.";
-  demoReceiptLink.hidden = false;
-});
 
 async function openLiveReceipt() {
   const params = new URLSearchParams(location.search);
@@ -695,12 +672,6 @@ form.addEventListener("submit", async (event) => {
     messagePhoto.hidden = !file;
     if (file) messagePhoto.src = imageUrl;
     else messagePhoto.removeAttribute("src");
-    demoRequest = { title: selected.title, quantity: describeCount(lead.quantity) };
-    demoConfirm.elements.price.value = selected.low ? selected.low * lead.quantity : "";
-    const day = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Moscow", dateStyle: "short" }).format(new Date(Date.now() + 86400000));
-    demoConfirm.elements.appointment.value = day + "T15:00";
-    document.querySelector("#demo-status").textContent = "Клиент ждёт согласования.";
-    demoReceiptLink.hidden = true;
     receipt.hidden = true;
     messagePreview.hidden = false;
     showFeedback("Демо-заявка сформирована. Ниже пример сообщения для владельца.", "success");
