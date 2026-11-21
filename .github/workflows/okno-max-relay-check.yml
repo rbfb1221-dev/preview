@@ -27,7 +27,7 @@ jobs:
                          ['Объём', '1 створка'], ['Оценка', '1 200–2 600 ₽']],
           }
 
-          def inspect(method, path='', headers=None, body=None):
+          def inspect(method, path='', headers=None, body=None, probe=None):
               request = urllib.request.Request(
                   url + path, data=body,
                   headers={'Origin': origin, **(headers or {})}, method=method,
@@ -55,6 +55,7 @@ jobs:
                   ) if word in detail]
                   print(json.dumps({
                       'method': method,
+                      'probe': probe,
                       'status': response.status,
                       'json_keys': sorted(parsed.keys()),
                       'ok': parsed.get('ok') if isinstance(parsed.get('ok'), bool) else None,
@@ -65,9 +66,15 @@ jobs:
                       'cors': response.headers.get('Access-Control-Allow-Origin'),
                   }, ensure_ascii=True), flush=True)
 
-          inspect('GET')
-          inspect('OPTIONS', headers={'Access-Control-Request-Method': 'POST',
-                                      'Access-Control-Request-Headers': 'content-type'})
-          inspect('POST', headers={'Content-Type': 'application/json'},
-                  body=json.dumps(payload).encode('utf-8'))
+          invalid = {**payload, 'phone': '', 'name': '', 'fields': []}
+          header = {'Content-Type': 'application/json'}
+          inspect('POST', headers=header, body=b'{', probe='malformed-json')
+          inspect('POST', headers=header, body=json.dumps(
+              {k: v for k, v in invalid.items() if k != 'site'}).encode(),
+              probe='missing-site-and-phone')
+          inspect('POST', headers=header, body=json.dumps(invalid).encode(),
+              probe='window-site-missing-phone')
+          inspect('POST', headers=header, body=json.dumps(
+              {**invalid, 'site': 'okno-v-poryadke-diagnostic-invalid'}).encode(),
+              probe='unregistered-site-missing-phone')
           PY
