@@ -1,0 +1,73 @@
+name: Diagnose window landing MAX relay
+on:
+  push:
+    branches: [codex/okno-max-relay-check]
+    paths: ['.github/workflows/okno-max-relay-check.yml']
+permissions: {}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Compare public relay responses
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.error
+          import urllib.request
+
+          url = 'https://functions.yandexcloud.net/d4ev0kithkpk2jm0h6fn'
+          origin = 'https://rbfb1221-dev.github.io'
+          payload = {
+              'site': 'okno-v-poryadke', 'type': 'quiz',
+              'name': 'ТЕСТ · Окно в порядке', 'phone': '+79000000000', 'website': '',
+              'fields': [['Проверка', 'GitHub Actions · okno-relay-check'],
+                         ['Проблема', 'Дует из закрытого окна'],
+                         ['Объём', '1 створка'], ['Оценка', '1 200–2 600 ₽']],
+          }
+
+          def inspect(method, path='', headers=None, body=None):
+              request = urllib.request.Request(
+                  url + path, data=body,
+                  headers={'Origin': origin, **(headers or {})}, method=method,
+              )
+              try:
+                  response = urllib.request.urlopen(request, timeout=12)
+              except urllib.error.HTTPError as error:
+                  response = error
+              except (urllib.error.URLError, TimeoutError) as error:
+                  print(method, type(error).__name__, flush=True)
+                  return
+              with response:
+                  raw = response.read(8192)
+                  try:
+                      parsed = json.loads(raw)
+                  except (ValueError, UnicodeError):
+                      parsed = {}
+                  if not isinstance(parsed, dict):
+                      parsed = {}
+                  detail = ' '.join(str(parsed.get(k, '')) for k in ('code', 'error', 'message', 'reason')).lower()
+                  signals = [word for word in (
+                      'unknown site', 'site not found', 'not found', 'invalid', 'forbidden',
+                      'function', 'version', 'website', 'phone', 'disabled',
+                      'permission', 'unauthorized', 'chat_id', 'recipient', 'allowlist',
+                  ) if word in detail]
+                  print(json.dumps({
+                      'method': method,
+                      'status': response.status,
+                      'json_keys': sorted(parsed.keys()),
+                      'ok': parsed.get('ok') if isinstance(parsed.get('ok'), bool) else None,
+                      'sent': parsed.get('sent') if isinstance(parsed.get('sent'), bool) else None,
+                      'signals': signals,
+                      'response_type': response.headers.get_content_type(),
+                      'request_id': response.headers.get('X-Request-Id'),
+                      'cors': response.headers.get('Access-Control-Allow-Origin'),
+                  }, ensure_ascii=True), flush=True)
+
+          inspect('GET')
+          inspect('OPTIONS', headers={'Access-Control-Request-Method': 'POST',
+                                      'Access-Control-Request-Headers': 'content-type'})
+          inspect('POST', headers={'Content-Type': 'application/json'},
+                  body=json.dumps(payload).encode('utf-8'))
+          PY
