@@ -24,6 +24,7 @@ jobs:
           for file in index.html manifest.webmanifest sw.js icon-192.png icon-512.png; do
             install -m 644 "okno-v-poryadke/zelenograd/$file" "out/okno-v-poryadke/zelenograd/$file"
           done
+          install -D -m 644 okno-v-poryadke/app/index.html out/okno-v-poryadke/app/index.html
           chmod -R a+rX out
           tar -cf artifact.tar -C out .
         env:
