@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Демо заявок для выездных услуг</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #21251f; background: #f6f5ef; }
+    body { margin: 0; }
+    button, input, select { font: inherit; }
+    button, a { touch-action: manipulation; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid #2d64c0; outline-offset: 3px; }
+    .wrap { margin: auto; width: min(1080px, calc(100% - 36px)); }
+    header { border-bottom: 1px solid #dcded4; }
+    header .wrap { min-height: 67px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    header strong { font-size: 1rem; }
+    header a { font-size: .9rem; text-underline-offset: 4px; }
+    main { padding: clamp(32px, 7vw, 80px) 0 56px; }
+    h1, h2, p { margin: 0; }
+    h1 { max-width: 17ch; font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1.04; letter-spacing: -.065em; text-wrap: balance; }
+    h2 { font-size: 1.45rem; line-height: 1.2; letter-spacing: -.035em; }
+    p { color: #51584d; }
+    .layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px, 6vw, 72px); align-items: start; }
+    .intro p { margin-top: 20px; max-width: 37ch; font-size: 1.08rem; }
+    .preview { margin-top: 30px; padding: 22px; background: var(--wash, #e8eddf); border-radius: 18px; }
+    .preview p { font-size: .875rem; margin: 4px 0 14px; }
+    .message { background: white; border-radius: 12px; padding: 14px 16px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .94rem; }
+    .message img { display: block; max-width: 100%; max-height: 240px; border-radius: 8px; margin-top: 12px; }
+    .card { background: #fff; padding: clamp(18px, 4vw, 32px); border: 1px solid #dedfd6; border-radius: 22px; box-shadow: 0 12px 34px #29251b0a; }
+    .card > p { margin: 5px 0 18px; font-size: .9rem; }
+    #fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: grid; align-content: start; gap: 5px; min-width: 0; font-size: .92rem; font-weight: 650; }
+    .wide { grid-column: 1 / -1; }
+    input, select { width: 100%; min-height: 43px; min-width: 0; border: 1px solid #cfd2c8; border-radius: 9px; padding: 8px 10px; background: #fff; color: inherit; }
+    input[type=file] { padding: 8px; }
+    input::file-selector-button { border: 0; border-radius: 5px; padding: 5px 8px; margin-right: 7px; background: var(--wash, #e8eddf); color: #252923; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    button { cursor: pointer; border: 1px solid transparent; border-radius: 10px; padding: 10px 14px; font-weight: 650; }
+    .primary { background: var(--ink, #254e38); color: #fff; }
+    .secondary { background: #fff; border-color: #cfd2c8; color: inherit; }
+    #status { margin-top: 12px; font-size: .875rem; }
+    #status:empty { display: none; }
+    .directory { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 24px; }
+    .directory a { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; font-weight: 650; min-height: 82px; }
+    .directory a:hover { background: #edf1e8; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .card { grid-row: 2; }
+      .preview { grid-row: 3; margin: 0; }
+    }
+    @media (min-width: 761px) {
+      .card { grid-column: 2; grid-row: 1 / span 2; }
+      .preview { grid-column: 1; margin: -34px 0 0; }
+    }
+    @media (max-width: 390px) { #fields { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><strong id="brand">Демо заявок</strong><a id="all" href="./" hidden>Все демо</a></div></header>
+  <main class="wrap">
+    <section id="directory-page" hidden>
+      <h1>Демо для выездных услуг</h1>
+      <div class="directory" id="directory"></div>
+    </section>
+    <div class="layout" id="service" hidden>
+      <section class="intro">
+        <h1 id="title"></h1>
+        <p id="description"></p>
+      </section>
+      <section class="card" aria-labelledby="form-title">
+        <h2 id="form-title">Данные для оценки</h2>
+        <p>Демо-форма. Данные остаются на этой странице.</p>
+        <form id="form">
+          <div id="fields"></div>
+          <div class="actions">
+            <button class="primary" type="submit">Показать заявку мастеру</button>
+            <button class="secondary" id="example" type="button">Подставить пример</button>
+          </div>
+          <p id="status" role="status"></p>
+        </form>
+      </section>
+      <section class="preview" id="preview" aria-labelledby="preview-title">
+        <h2 id="preview-title" tabindex="-1">Пример сообщения в Telegram</h2>
+        <p>Так мастер увидит данные заявки.</p>
+        <div class="message"><span id="message"></span><img id="photo-preview" alt="Фото из примера заявки" hidden></div>
+      </section>
+    </div>
+    <noscript>Включите JavaScript, чтобы открыть демо.</noscript>
+  </main>
+  <script>
+    const fields = {
+      text: (label, example, placeholder = '', wide = false) => ({ label, example, placeholder, wide }),
+      select: (label, options, example = options[0]) => ({ label, options, example }),
+      photo: label => ({ label, type: 'file', wide: true, optional: true }),
+      phone: { label: 'Телефон для связи', type: 'tel', example: '+7 900 000-00-00', placeholder: '+7 900 000-00-00' }
+    };
+    const { text, select, photo, phone } = fields;
+    const presets = {
+      removal: {
+        name: 'Вывоз вещей и мебели', title: 'Рассчитайте вывоз по фото', colors: ['#214f3e', '#e4efe5'],
+        description: 'Укажите, что нужно вывезти. По фото, этажу и наличию лифта исполнитель сможет оценить стоимость.',
+        fields: [text('Что вывезти', 'Диван и кресло', 'Например, диван и кресло', true),
+          text('Район', 'Советский', 'Район или улица'), text('Этаж', '5', 'Например, 5'),
+          select('Лифт', ['Нет лифта', 'Пассажирский', 'Грузовой']), phone, photo('Фото вещей')]
+      },
+      upholstery: {
+        name: 'Перетяжка мебели', title: 'Узнайте цену перетяжки', colors: ['#723d34', '#f3e8e3'],
+        description: 'Опишите мебель и приложите фото. Мастер оценит работу и подскажет, какие детали нужно уточнить.',
+        fields: [select('Тип мебели', ['Угловой диван', 'Прямой диван', 'Кресло', 'Стулья', 'Другое']),
+          text('Примерные размеры', '240 × 160 см', 'Можно написать «не знаю»'),
+          text('Что нужно заменить', 'Обивку, каркас цел', 'Обивка, наполнитель или ремонт', true), phone, photo('Фото мебели')]
+      },
+      moving: {
+        name: 'Переезды и грузчики', title: 'Получите оценку переезда', colors: ['#304d7b', '#e5ecf7'],
+        description: 'Укажите маршрут, крупные вещи и условия погрузки. Исполнитель сможет предложить машину и оценить работу.',
+        fields: [text('Откуда', 'Центральный район', 'Район отправления'),
+          text('Куда', 'Заречье', 'Район назначения'),
+          text('Этаж и лифт при погрузке', '4-й, без лифта', 'Например, 4-й, без лифта'),
+          text('Этаж и лифт при выгрузке', '7-й, грузовой лифт', 'Например, 7-й, грузовой лифт'),
+          text('Крупные вещи', 'Холодильник и 8 коробок', 'Мебель, техника, коробки', true),
+          text('Когда нужен переезд', 'В субботу после 12:00', 'День и время'), phone]
+      },
+      screens: {
+        name: 'Москитные сетки', title: 'Рассчитайте москитные сетки', colors: ['#3d5840', '#e9eee0'],
+        description: 'Укажите тип проёма, количество и размеры. Если размеров нет, мастер подскажет, как организовать замер.',
+        fields: [select('Тип проёма', ['Окно', 'Балконная дверь', 'Другой проём']),
+          text('Количество', '2', 'Например, 2'),
+          text('Примерные размеры', '60 × 130 см', 'Можно написать «нужен замер»'),
+          phone, photo('Фото проёма или крепления')]
+      },
+      cleaning: {
+        name: 'Химчистка мебели', title: 'Узнайте цену химчистки по фото', colors: ['#325369', '#e1eef1'],
+        description: 'Опишите мебель и загрязнение. По фото мастер сможет уточнить стоимость чистки и согласовать выезд.',
+        fields: [select('Тип мебели', ['Прямой диван', 'Угловой диван', 'Кресло', 'Матрас', 'Другое']),
+          text('Размер или число мест', '3 места', 'Например, 3 места'),
+          text('Что нужно почистить', 'Пятно от кофе на сиденье', 'Расскажите о пятнах или запахе', true),
+          text('Район', 'Центральный', 'Район или улица'), phone, photo('Фото мебели и загрязнения')]
+      }
+    };
+
+    const byId = id => document.getElementById(id);
+    const selected = new URLSearchParams(location.search).get('service');
+    if (Object.hasOwn(presets, selected)) {
+      showService(presets[selected]);
+    } else {
+      byId('directory-page').hidden = false;
+      for (const [id, preset] of Object.entries(presets)) {
+        const link = document.createElement('a');
+        link.className = 'card';
+        link.href = '?service=' + id;
+        link.textContent = preset.name;
+        byId('directory').append(link);
+      }
+    }
+
+    function showService(preset) {
+      document.title = preset.name + ' — демо заявки';
+      document.documentElement.style.setProperty('--ink', preset.colors[0]);
+      document.documentElement.style.setProperty('--wash', preset.colors[1]);
+      byId('brand').textContent = preset.name;
+      byId('title').textContent = preset.title;
+      byId('description').textContent = preset.description;
+      byId('all').hidden = false;
+      byId('service').hidden = false;
+
+      const controls = preset.fields.map(field => {
+        const label = document.createElement('label');
+        label.classList.toggle('wide', Boolean(field.wide));
+        const caption = document.createElement('span');
+        caption.textContent = field.label + (field.optional ? ' (необязательно)' : '');
+        const control = document.createElement(field.options ? 'select' : 'input');
+        if (field.options) {
+          control.add(new Option('Выберите вариант', ''));
+          for (const option of field.options) control.add(new Option(option, option));
+        } else {
+          control.type = field.type || 'text';
+          control.placeholder = field.placeholder || '';
+          if (field.type === 'file') control.accept = 'image/*';
+          else control.maxLength = 200;
+          if (field.type === 'tel') {
+            control.inputMode = 'tel';
+            control.autocomplete = 'off';
+          }
+        }
+        control.required = !field.optional;
+        label.append(caption, control);
+        byId('fields').append(label);
+        return { field, control };
+      });
+
+      const photoPreview = byId('photo-preview');
+      let photoUrl;
+      function renderMessage(useExample) {
+        const lines = ['Новая заявка · ' + preset.name, ''];
+        let attachedPhoto;
+        for (const { field, control } of controls) {
+          if (field.type === 'file') {
+            const file = control.files?.[0];
+            if (!useExample && file?.type.startsWith('image/')) attachedPhoto = file;
+          } else {
+            lines.push(field.label + ': ' + (useExample ? field.example : control.value.trim()));
+          }
+        }
+        if (attachedPhoto) lines.push('Фото: ' + attachedPhoto.name);
+        byId('message').textContent = lines.join('\n');
+        if (photoUrl) URL.revokeObjectURL(photoUrl);
+        photoUrl = attachedPhoto ? URL.createObjectURL(attachedPhoto) : undefined;
+        if (photoUrl) photoPreview.src = photoUrl;
+        else photoPreview.removeAttribute('src');
+        photoPreview.hidden = !photoUrl;
+      }
+      renderMessage(true);
+
+      byId('example').addEventListener('click', () => {
+        for (const { field, control } of controls) control.value = field.example || '';
+        renderMessage(true);
+        byId('status').textContent = 'Пример подставлен. Поля можно изменить.';
+      });
+      byId('form').addEventListener('submit', event => {
+        event.preventDefault();
+        for (const { field, control } of controls) {
+          if (field.type !== 'file' && !control.value.trim()) {
+            control.value = '';
+            control.reportValidity();
+            return;
+          }
+        }
+        renderMessage(false);
+        byId('status').textContent = 'Пример заявки обновлён.';
+        byId('preview-title').focus();
+      });
+    }
+  </script>
+</body>
+</html>
