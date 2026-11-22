@@ -1,0 +1,74 @@
+name: Telegram delivery smoke test
+on:
+  push:
+    branches: [telegram-delivery-test]
+    paths: [.github/workflows/telegram-delivery-test.yml]
+permissions: {}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check Telegram and optionally send a synthetic test
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.OKNO_TELEGRAM_TEST_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          import urllib.error
+          import urllib.request
+
+          pairing_hash = 'f6b8084962417800371a059d639b5a12ad22fc5273d1314e5d6730ed97c6d351'
+          token = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
+
+          def request(bot_token, method, payload):
+              url = f'https://api.telegram.org/bot{bot_token}/{method}'
+              req = urllib.request.Request(url, json.dumps(payload).encode(), {
+                  'Content-Type': 'application/json'
+              })
+              try:
+                  with urllib.request.urlopen(req, timeout=12) as response:
+                      return response.status, json.load(response).get('result')
+              except urllib.error.HTTPError as error:
+                  return error.code, None
+              except (OSError, ValueError):
+                  raise SystemExit('Connection or invalid API response') from None
+
+          if not token:
+              status, _ = request('0:invalid', 'getMe', {})
+              if status not in {401, 404}:
+                  raise SystemExit(f'Unexpected response to reachability probe: HTTP {status}')
+              print(f'Telegram Bot API reached: HTTP {status}')
+              print('Credentials pending. No message sent.')
+              raise SystemExit(0)
+
+          if not re.fullmatch(r'[0-9]+:[A-Za-z0-9_-]+', token):
+              raise SystemExit('Invalid token format')
+          status, bot = request(token, 'getMe', {})
+          if status != 200 or not bot or bot.get('username', '').lower() != 'oknovporyadkeleadsbot':
+              raise SystemExit(f'Expected bot not confirmed: HTTP {status}')
+
+          status, updates = request(token, 'getUpdates', {'allowed_updates': ['message']})
+          if status != 200 or not isinstance(updates, list):
+              raise SystemExit(f'Cannot read pairing updates: HTTP {status}')
+          matches = set()
+          for update in updates:
+              message = update.get('message', {})
+              chat = message.get('chat', {})
+              command = message.get('text', '')
+              if chat.get('type') == 'private' and hashlib.sha256(command.encode()).hexdigest() == pairing_hash:
+                  matches.add(chat['id'])
+          if len(matches) != 1:
+              raise SystemExit('Send the private pairing command to the bot, then retry.')
+
+          status, message = request(token, 'sendMessage', {
+              'chat_id': matches.pop(),
+              'text': '🧪 Тестовая заявка «Окно в порядке»\nПроблема: дует из окна\nДве створки\nТелефон: +7 900 000-00-00',
+          })
+          if status != 200 or not message or not message.get('message_id'):
+              raise SystemExit(f'Send failed: HTTP {status}')
+          print('Telegram accepted the synthetic lead for the paired chat.')
+          PY
