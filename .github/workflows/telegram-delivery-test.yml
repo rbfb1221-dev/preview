@@ -38,12 +38,7 @@ jobs:
                   raise SystemExit('Connection or invalid API response') from None
 
           if not token:
-              status, _ = request('0:invalid', 'getMe', {})
-              if status not in {401, 404}:
-                  raise SystemExit(f'Unexpected response to reachability probe: HTTP {status}')
-              print(f'Telegram Bot API reached: HTTP {status}')
-              print('Credentials pending. No message sent.')
-              raise SystemExit(0)
+              raise SystemExit('Repository secret OKNO_TELEGRAM_TEST_TOKEN is missing.')
 
           if not re.fullmatch(r'[0-9]+:[A-Za-z0-9_-]+', token):
               raise SystemExit('Invalid token format')
