@@ -348,7 +348,7 @@ updateEstimate();
   }
 
   if (standalone) return;
-  if (isAppleMobile) section.hidden = false;
+  section.hidden = false;
 
   window.addEventListener("beforeinstallprompt", event => {
     event.preventDefault();
@@ -360,7 +360,7 @@ updateEstimate();
     if (!promptEvent) {
       help.textContent = isAppleMobile
         ? "В Safari нажмите «Поделиться», затем «На экран Домой»."
-        : "Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».";
+        : "В Chrome откройте меню и выберите «Добавить на главный экран» или «Установить приложение». На iPhone откройте эту страницу в Safari.";
       help.hidden = !help.hidden;
       button.setAttribute("aria-expanded", String(!help.hidden));
       return;
