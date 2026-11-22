@@ -20,7 +20,10 @@ jobs:
           cat site.* | openssl enc -d -aes-256-cbc -pbkdf2 -pass env:SITE_KEY | tar -xf - -C out
           mkdir out/okno-v-poryadke
           cp okno-v-poryadke/index.html out/okno-v-poryadke/index.html
-          install -D -m 644 okno-v-poryadke/zelenograd/index.html out/okno-v-poryadke/zelenograd/index.html
+          mkdir -p out/okno-v-poryadke/zelenograd
+          for file in index.html manifest.webmanifest sw.js icon-192.png icon-512.png; do
+            install -m 644 "okno-v-poryadke/zelenograd/$file" "out/okno-v-poryadke/zelenograd/$file"
+          done
           chmod -R a+rX out
           tar -cf artifact.tar -C out .
         env:
