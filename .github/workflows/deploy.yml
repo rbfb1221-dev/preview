@@ -25,6 +25,7 @@ jobs:
             install -m 644 "okno-v-poryadke/zelenograd/$file" "out/okno-v-poryadke/zelenograd/$file"
           done
           install -D -m 644 okno-v-poryadke/app/index.html out/okno-v-poryadke/app/index.html
+          install -D -m 644 service-demos/index.html out/service-demos/index.html
           chmod -R a+rX out
           tar -cf artifact.tar -C out .
         env:
