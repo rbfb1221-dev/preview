@@ -460,6 +460,13 @@
             <button type="button" class="appsecondary" id="app-master" aria-controls="app-master-reply" aria-expanded="false" hidden>Ответить как мастер</button>
           </div>
           <p class="app-copy-status" id="app-copy-status" role="status"></p>
+          <form class="master-reply" id="telegram-test" hidden>
+            <h3>Проверка доставки в Telegram</h3>
+            <p class="clean-details-note">Отправляет этот пример и фото в чат владельца демо. Используйте вымышленные данные.</p>
+            <label class="applabel">Код теста <input id="telegram-test-code" type="password" autocomplete="off" required minlength="32" maxlength="32"></label>
+            <button type="submit" class="appprimary">Отправить тест в Telegram</button>
+            <p id="telegram-test-result" class="app-copy-status" role="status"></p>
+          </form>
           <section class="master-reply" id="app-master-reply" aria-labelledby="master-reply-title" hidden>
             <h3 id="master-reply-title">Ответ клиенту</h3>
             <div class="master-fields">
@@ -951,6 +958,8 @@
     }
 
     const master = cleanTemplate ? mountMasterReply() : null;
+    const telegramTest = cleanTemplate && new URLSearchParams(location.search).get('telegram') === 'test'
+      ? mountTelegramTest() : null;
     form.addEventListener('submit', event => {
       event.preventDefault();
       const number = formatPhone();
@@ -970,6 +979,7 @@
       if (photos.length) pairs.push(['Фото', String(photos.length)]);
       receiptText = ['Заявка · ' + get('app-brand').textContent, ...pairs.map(([label,value]) => label + ': ' + value)].join('\n');
       copyStatus.textContent = '';
+      telegramTest?.setReceipt(receiptText,photos.map(photo => photo.url));
       const message = get('app-message');
       message.replaceChildren();
       for (const [label, value] of pairs) {
@@ -986,6 +996,80 @@
   }
 
 
+
+
+  function mountTelegramTest() {
+    const form = document.getElementById('telegram-test');
+    const key = document.getElementById('telegram-test-code');
+    const status = document.getElementById('telegram-test-result');
+    const button = form.querySelector('button');
+    let receipt;
+    let busy = false;
+    let sent = false;
+    form.hidden = false;
+
+    async function encodePhoto(url) {
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      for (const size of [1280,960,640]) {
+        const ratio = Math.min(1,size / Math.max(img.naturalWidth,img.naturalHeight));
+        canvas.width = Math.max(16,Math.round(img.naturalWidth * ratio));
+        canvas.height = Math.max(16,Math.round(img.naturalHeight * ratio));
+        context.fillStyle = '#ffffff';
+        context.fillRect(0,0,canvas.width,canvas.height);
+        context.drawImage(img,0,0,canvas.width,canvas.height);
+        const result = canvas.toDataURL('image/jpeg',.74).split(',')[1];
+        if (result && result.length <= 530000) return result;
+      }
+      throw new Error('photo');
+    }
+
+    const errors = {
+      code:'Код теста не подошёл.',
+      pairing:'Бот пока не видит команду привязки. Повторите её в чате с ботом.',
+      bot_config:'В облачной функции нужно обновить токен тестового бота.',
+      wait:'Подождите несколько секунд и повторите тест.',
+      photo:'Не удалось подготовить вложение. Попробуйте другое фото.'
+    };
+    form.addEventListener('submit',async event => {
+      event.preventDefault();
+      if (!receipt || busy || sent) return;
+      const current = receipt;
+      busy = true;
+      button.disabled = true;
+      status.textContent = 'Отправляем тест…';
+      try {
+        const photos = await Promise.all(current.urls.map(encodePhoto));
+        const res = await fetch('https://functions.yandexcloud.net/d4ev0kithkpk2jm0h6fn?mode=cleaning-telegram-test',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({code:key.value,id:current.id,text:current.text,photos}),
+          signal:AbortSignal.timeout(20000)
+        });
+        const result = await res.json();
+        if (!res.ok || !result.sent) throw new Error(result.error || 'telegram');
+        if (receipt === current) {
+          sent = true;
+          status.textContent = photos.length ? 'Тестовая заявка с фото доставлена в Telegram.' : 'Тестовая заявка доставлена в Telegram.';
+        }
+      } catch (error) {
+        if (receipt === current) status.textContent = errors[error.message] || 'Доставку подтвердить не удалось. Можно повторить тест.';
+      } finally {
+        busy = false;
+        button.disabled = sent;
+      }
+    });
+    return {
+      setReceipt(text,urls) {
+        receipt = {id:crypto.randomUUID(),text:text.length > 930 ? text.slice(0,924) + '…' : text,urls};
+        sent = false;
+        button.disabled = busy;
+        status.textContent = '';
+      }
+    };
+  }
 
   function mountMasterReply() {
     const toggle = document.getElementById('app-master');
