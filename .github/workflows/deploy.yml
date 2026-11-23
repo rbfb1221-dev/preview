@@ -26,6 +26,7 @@ jobs:
           done
           install -D -m 644 okno-v-poryadke/app/index.html out/okno-v-poryadke/app/index.html
           install -D -m 644 service-demos/index.html out/service-demos/index.html
+          install -m 644 service-demos/clean-furniture.png out/service-demos/clean-furniture.png
           chmod -R a+rX out
           tar -cf artifact.tar -C out .
         env:

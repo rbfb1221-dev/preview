@@ -150,9 +150,9 @@
     }
     @media (max-width: 380px) { .appfields { grid-template-columns: 1fr; } }
 
-    .clean-demo { --background:#171923; --surface:#222533; --ink:#f4f4f8; --muted:#c4c8d7; --line:#474c61; color-scheme:dark; }
+    .clean-demo { --background:#181d1a; --surface:#242c26; --ink:#f3f6ee; --muted:#c4cec1; --line:#465449; color-scheme:dark; }
     .clean-demo .appwrap { width:min(1160px,calc(100% - 48px)); }
-    .clean-demo .apptop { background:#171923; }
+    .clean-demo .apptop { background:var(--background); }
     .clean-demo .appmark::before { border-color:#17241c; }
     .clean-demo .appnav button:disabled { color:var(--muted); }
     .clean-demo .appdemo { border-radius:20px; border:1px solid var(--line); padding:4px 10px; }
@@ -166,18 +166,35 @@
     .clean-workbench { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(325px,1fr); gap:14px; margin-top:22px; align-items:stretch; }
     .clean-gallery, .clean-controls { min-width:0; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:var(--surface); }
     .clean-gallery { display:flex; flex-direction:column; }
-    .clean-visual { position:relative; min-height:332px; flex:1; isolation:isolate; background:#34413e; overflow:hidden; }
-    .clean-visual img { display:block; width:100%; height:100%; inset:0; position:absolute; z-index:-2; object-fit:cover; object-position:center 58%; }
-    .clean-visual::after { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(0deg,#151722f5,transparent 68%); pointer-events:none; }
-    .clean-visual-caption { position:absolute; bottom:0; left:0; right:0; padding:clamp(16px,3vw,30px); color:#fff; }
-    .clean-visual-caption strong { display:block; font-size:clamp(1.45rem,3vw,2.65rem); line-height:1.08; letter-spacing:-.05em; }
-    .clean-visual-caption span { color:#e8edf3; font-size:.95rem; display:block; margin-top:5px; }
+    .clean-visual {
+      position:relative; display:grid; place-items:center; min-height:322px; flex:1; isolation:isolate; overflow:hidden;
+      background:
+        radial-gradient(ellipse at 50% 44%,#64715e 0%,#465448 49%,#344138 80%),
+        #3c4b40;
+    }
+    .clean-visual::before {
+      content:""; position:absolute; z-index:-1; inset:72% -15% auto; height:37%; border-radius:50% 50% 0 0;
+      background:linear-gradient(#a8b59d28,#293b2f26); box-shadow:0 -1px 0 #c4d3b628;
+    }
+    .furniture-sprite {
+      display:block; aspect-ratio:1; background-image:url("./clean-furniture.png?v=1"); background-repeat:no-repeat; background-size:200% 200%;
+    }
+    .furniture-sprite[data-model="sofa"] { background-position:left top; }
+    .furniture-sprite[data-model="armchair"] { background-position:right top; }
+    .furniture-sprite[data-model="mattress"] { background-position:left bottom; }
+    .furniture-sprite[data-model="chair"] { background-position:right bottom; }
+    #clean-image { width:min(84%,390px); position:absolute; top:49%; left:50%; translate:-50% -50%; }
+    #clean-image[data-model="armchair"] { width:min(77%,350px); }
+    #clean-image[data-model="chair"] { width:min(66%,275px); }
+    .clean-visual-caption { position:absolute; top:14px; left:14px; padding:8px 11px; border-radius:10px; background:#1a261fd9; color:#fff; }
+    .clean-visual-caption strong { display:block; font-size:.88rem; line-height:1.1; }
+    .clean-visual-caption span { color:#e5eadf; font-size:.77rem; display:block; margin-top:3px; }
     .clean-kinds { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; padding:10px; }
-    .clean-kinds button, .clean-sizes label { min-width:0; border:1px solid var(--line); background:#2a2e3f; color:var(--ink); border-radius:10px; }
-    .clean-kinds button { padding:8px 4px; }
-    .clean-kinds button img { display:block; width:100%; height:46px; object-fit:cover; border-radius:6px; margin-bottom:4px; }
+    .clean-kinds button, .clean-sizes label { min-width:0; border:1px solid var(--line); background:#303931; color:var(--ink); border-radius:10px; }
+    .clean-kinds button { display:flex; flex-direction:column; align-items:center; gap:0; padding:4px 3px 7px; }
+    .clean-kinds button .furniture-sprite { width:52px; }
     .clean-kinds button[aria-pressed="true"], .clean-sizes label:has(:checked) { border-color:var(--accent); background:var(--tint); color:var(--accent); }
-    .clean-controls { padding:clamp(16px,2.5vw,24px); }
+    .clean-controls { padding:clamp(18px,2.7vw,28px); box-shadow:inset 0 1px #ffffff0e; }
     .clean-controls h2 { margin-bottom:17px; font-size:clamp(1.55rem,3vw,2.25rem); }
     .clean-controls legend { margin-bottom:7px; color:var(--muted); font-size:.87rem; font-weight:650; }
     .clean-sizes { display:flex; flex-wrap:wrap; gap:6px; }
@@ -189,7 +206,7 @@
     .clean-adjustments small, .clean-total small { display:block; color:var(--muted); font-size:.81rem; font-weight:450; }
     .clean-quantity { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .clean-counter { display:flex; align-items:center; gap:10px; }
-    .clean-counter button { background:#2a2e3f; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:5px 10px; }
+    .clean-counter button { background:#303931; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:5px 10px; }
     .clean-counter button:disabled { color:#9ea5bb; cursor:default; }
     .clean-counter output { min-width:2ch; text-align:center; }
     .clean-total { display:flex; gap:10px; justify-content:space-between; align-items:center; border-top:1px solid var(--line); margin-top:15px; padding-block:11px; }
@@ -213,10 +230,13 @@
     @media(max-width:740px) {
       .clean-demo .appwrap { width:calc(100% - 26px); }
       .clean-workbench { grid-template-columns:minmax(0,1fr); gap:9px; margin-top:14px; }
-      .clean-visual { min-height:210px; }
+      .clean-visual { min-height:230px; }
+      #clean-image { width:min(84%,290px); }
+      #clean-image[data-model="armchair"] { width:min(72%,235px); }
+      #clean-image[data-model="chair"] { width:min(58%,177px); }
       .clean-kinds { padding:7px; gap:4px; }
       .clean-kinds button { font-size:.84rem; }
-      .clean-kinds button img { height:36px; }
+      .clean-kinds button .furniture-sprite { width:41px; }
       .clean-intro p { margin-top:8px; font-size:.91rem; }
     }
   </style>
@@ -327,13 +347,13 @@
 
   <template id="clean-calculator">
     <div class="clean-intro">
-      <h1 id="clean-title" tabindex="-1">Сколько стоит химчистка?</h1>
+      <h1 id="clean-title" tabindex="-1">Освежите любимую мебель.</h1>
       <p>Выберите мебель и размер. Ориентир появится сразу.</p>
     </div>
     <div class="clean-workbench">
       <div class="clean-gallery">
         <div class="clean-visual">
-          <img id="clean-image" width="1200" height="800" fetchpriority="high" alt="">
+          <div id="clean-image" class="furniture-sprite" role="img"></div>
           <div class="clean-visual-caption"><strong id="clean-image-title"></strong><span id="clean-image-size"></span></div>
         </div>
         <div id="clean-kinds" class="clean-kinds" role="group" aria-label="Вид мебели"></div>
@@ -363,7 +383,7 @@
   </template>
   <script>
 
-  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#ddee9f","#323c32","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
+  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#dcecb6","#354339","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
   const activeNiche = new URLSearchParams(location.search).get('service');
   if (Object.hasOwn(priorityNiches, activeNiche)) {
     mountServiceApp(priorityNiches[activeNiche]);
@@ -749,10 +769,10 @@
 
   function mountCleaningCalculator(actions) {
     const catalog = [
-      { title:'Диван', image:4846097, alt:'Мягкий диван в гостиной', variants:[['2 места',2500],['3 места',3200],['Угловой',4200]] },
-      { title:'Кресло', image:15269215, alt:'Мягкое синее кресло', variants:[['Стандартное',1200],['Большое',1600]] },
-      { title:'Матрас', image:6523294, alt:'Матрас в спальне', variants:[['Односпальный',1800],['Двуспальный',2600]] },
-      { title:'Стул', image:5825351, alt:'Стул с мягким сиденьем', variants:[['Сиденье',550],['Со спинкой',800]] }
+      { title:'Диван', model:'sofa', alt:'Зелёный мягкий диван', variants:[['2 места',2500],['3 места',3200],['Угловой',4200]] },
+      { title:'Кресло', model:'armchair', alt:'Светлое мягкое кресло', variants:[['Стандартное',1200],['Большое',1600]] },
+      { title:'Матрас', model:'mattress', alt:'Светлый стёганый матрас', variants:[['Односпальный',1800],['Двуспальный',2600]] },
+      { title:'Стул', model:'chair', alt:'Стул с мягким сиденьем', variants:[['Сиденье',550],['Со спинкой',800]] }
     ];
     const get = id => document.getElementById(id);
     const money = new Intl.NumberFormat('ru-RU', {style:'currency',currency:'RUB',maximumFractionDigits:0});
@@ -800,8 +820,12 @@
       const item = catalog[index];
       get('clean-furniture').textContent = item.title;
       get('clean-image-title').textContent = item.title;
-      image.alt = item.alt;
-      image.src = furniturePhoto(item.image, 1200);
+      image.dataset.model = item.model;
+      image.setAttribute('aria-label', item.alt);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        for (const animation of image.getAnimations()) animation.cancel();
+        image.animate([{opacity:.72, transform:'translateY(5px)'},{opacity:1, transform:'translateY(0)'}], {duration:210,easing:'ease-out'});
+      }
       for (const [current, button] of tabs.entries()) button.setAttribute('aria-pressed', String(current === index));
       const choices = get('clean-sizes');
       choices.replaceChildren();
@@ -822,9 +846,10 @@
     for (const [index, item] of catalog.entries()) {
       const button = document.createElement('button');
       button.type = 'button';
-      const thumbnail = document.createElement('img');
-      thumbnail.src = furniturePhoto(item.image, 235);
-      thumbnail.alt = '';
+      const thumbnail = document.createElement('span');
+      thumbnail.className = 'furniture-sprite';
+      thumbnail.dataset.model = item.model;
+      thumbnail.setAttribute('aria-hidden', 'true');
       button.append(thumbnail, item.title);
       button.addEventListener('click', () => chooseKind(index));
       tabs.push(button);
