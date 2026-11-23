@@ -340,6 +340,29 @@
       .clean-bundles { margin-top:15px; }
       .master-fields { grid-template-columns:1fr; }
     }
+
+    .clean-demo .appbrand { min-width:0; }
+    .clean-demo .appbrand span:last-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .clean-demo .app-setup { min-height:36px; padding:5px 9px; font-size:.78rem; white-space:nowrap; }
+    .app-profile {
+      width:min(620px,calc(100% - 24px)); max-height:calc(100dvh - 30px); overflow:auto;
+      background:var(--surface); color:var(--ink); border:1px solid var(--line);
+      border-radius:18px; padding:clamp(15px,3vw,24px);
+    }
+    .app-profile::backdrop { background:#111912bc; backdrop-filter:blur(3px); }
+    .profile-top { display:flex; align-items:start; justify-content:space-between; gap:14px; margin-bottom:13px; }
+    .profile-top h2 { font-size:1.37rem; }
+    .app-profile input { background:var(--background); color:var(--ink); border-color:var(--line); }
+    .app-profile fieldset { padding:0; border:0; margin:14px 0 0; min-width:0; }
+    .app-profile legend { padding:0; margin-bottom:6px; font-weight:650; }
+    .profile-rates { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .profile-rates label { font-size:.82rem; }
+    .profile-link { margin-top:14px; }
+    .profile-link-actions { margin-top:4px; }
+    @media(max-width:540px) {
+      .profile-rates { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .clean-demo .appbar { gap:8px; }
+    }
   </style>
 </head>
 <body>
@@ -384,7 +407,8 @@
           <button type="button" data-step="1" disabled>Детали</button>
           <button type="button" data-step="2" disabled>Заявка</button>
         </nav>
-        <span class="appdemo">Демо</span>
+        <span class="appdemo" id="app-demo-badge">Демо</span>
+        <button class="appsecondary app-setup" id="app-setup" type="button" hidden>Настроить демо</button>
       </header>
     </div>
     <main class="appwrap appmain">
@@ -457,6 +481,23 @@
         </aside>
       </div>
     </main>
+    <dialog id="app-profile" class="app-profile" aria-labelledby="profile-title">
+      <form id="app-profile-form">
+        <div class="profile-top">
+          <h2 id="profile-title">Демо под вашу химчистку</h2>
+          <button type="button" id="profile-close" class="applink" aria-label="Закрыть настройки">Закрыть</button>
+        </div>
+        <label class="applabel">Название <input id="profile-name" maxlength="42" placeholder="Например, Чистый дом"></label>
+        <fieldset><legend>Цены за единицу, ₽</legend><div id="profile-rates" class="profile-rates"></div></fieldset>
+        <div class="appactions">
+          <button class="appprimary" type="submit">Применить</button>
+          <button class="appsecondary" id="profile-reset" type="button">Вернуть демо-прайс</button>
+        </div>
+        <label class="applabel profile-link">Ссылка на персональное демо <input id="profile-link" type="url" readonly></label>
+        <div class="appactions profile-link-actions"><button class="applink" type="button" id="profile-copy" hidden>Скопировать ссылку на демо</button></div>
+        <p id="profile-status" class="app-copy-status" role="status"></p>
+      </form>
+    </dialog>
   </template>
 
   <template id="clean-calculator">
@@ -747,6 +788,10 @@
       cleaningOrder = mountCleaningCalculator({
         checkout: openDetails,
         calculate: () => showStep(0),
+        reprice() {
+          invalidateReceipt();
+          if (step === 2) showStep(1);
+        },
         changed(hasItems) {
           invalidateReceipt();
           if (!hasItems) {
@@ -926,7 +971,7 @@
       if (preference) pairs.push(['Когда удобно', preference]);
       pairs.push(['Телефон', '+7 ' + phone.value]);
       if (photos.length) pairs.push(['Фото', String(photos.length)]);
-      receiptText = ['Заявка · ' + preset.name, ...pairs.map(([label,value]) => label + ': ' + value)].join('\n');
+      receiptText = ['Заявка · ' + get('app-brand').textContent, ...pairs.map(([label,value]) => label + ': ' + value)].join('\n');
       copyStatus.textContent = '';
       const message = get('app-message');
       message.replaceChildren();
@@ -1026,6 +1071,126 @@
     return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + width;
   }
 
+
+  function mountCleaningProfile(catalog, onChange) {
+    const get = id => document.getElementById(id);
+    const key = 'cleaning-demo-profile-v1';
+    const generic = 'Химчистка мебели';
+    const defaults = {name:'',rates:catalog.flatMap(item => item.variants.map(([,rate]) => rate))};
+    const offsets = catalog.map((_,index) => catalog.slice(0,index).reduce((count,item) => count + item.variants.length,0));
+    const maxRate = 99999;
+    function validProfile(value) {
+      return Boolean(value && typeof value.name === 'string' && value.name.length <= 42
+        && Array.isArray(value.rates) && value.rates.length === defaults.rates.length
+        && value.rates.every(rate => Number.isInteger(rate) && rate >= 1 && rate <= maxRate));
+    }
+    function initialProfile() {
+      const params = new URL(location.href).searchParams;
+      const prices = params.get('rates');
+      if (prices && prices.length <= 64 && /^\d+(\.\d+)*$/.test(prices)) {
+        const fromLink = {name:(params.get('brand') || '').trim(),rates:prices.split('.').map(Number)};
+        if (validProfile(fromLink)) return fromLink;
+      }
+      try {
+        const saved = JSON.parse(localStorage.getItem(key));
+        if (validProfile(saved)) return saved;
+      } catch {
+        // The demo still works when storage is disabled.
+      }
+      return defaults;
+    }
+
+    let current = initialProfile();
+    const setup = get('app-setup');
+    const dialog = get('app-profile');
+    const form = get('app-profile-form');
+    const name = get('profile-name');
+    const link = get('profile-link');
+    const status = get('profile-status');
+    const copy = get('profile-copy');
+    const inputs = catalog.flatMap(item => item.variants.map(([variant]) => {
+      const label = document.createElement('label');
+      label.className = 'applabel';
+      label.textContent = item.title + ' · ' + variant;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.inputMode = 'numeric';
+      input.min = '1';
+      input.max = String(maxRate);
+      input.step = '1';
+      input.required = true;
+      label.append(input);
+      get('profile-rates').append(label);
+      return input;
+    }));
+
+    function writeParams(url) {
+      url.searchParams.set('rates',current.rates.join('.'));
+      if (current.name) url.searchParams.set('brand',current.name);
+      else url.searchParams.delete('brand');
+    }
+    function applyBrand() {
+      const brand = current.name || generic;
+      get('app-brand').textContent = brand;
+      document.title = brand + ' — демо заявки';
+      const url = new URL(location.href);
+      url.hash = '';
+      url.searchParams.delete('quote');
+      writeParams(url);
+      link.value = url.href;
+      link.setAttribute('value',url.href);
+    }
+    function fillForm() {
+      name.value = current.name;
+      for (const [index,input] of inputs.entries()) input.value = current.rates[index];
+    }
+    function saveProfile(profile) {
+      current = profile;
+      try {
+        localStorage.setItem(key,JSON.stringify(current));
+      } catch {
+        // The personalised URL also carries the quote settings.
+      }
+      const url = new URL(location.href);
+      writeParams(url);
+      history.replaceState(history.state,'',url);
+      applyBrand();
+      fillForm();
+      onChange();
+      status.textContent = 'Настройки применены. Ссылка готова.';
+    }
+
+    setup.hidden = false;
+    get('app-demo-badge').hidden = true;
+    applyBrand();
+    setup.addEventListener('click',() => {
+      fillForm();
+      status.textContent = '';
+      dialog.showModal();
+    });
+    get('profile-close').addEventListener('click',() => dialog.close());
+    form.addEventListener('submit',event => {
+      event.preventDefault();
+      const candidate = {name:name.value.trim(),rates:inputs.map(input => input.valueAsNumber)};
+      if (validProfile(candidate)) saveProfile(candidate);
+    });
+    get('profile-reset').addEventListener('click',() => saveProfile(defaults));
+    link.addEventListener('focus',() => link.select());
+    if (navigator.clipboard?.writeText) {
+      copy.hidden = false;
+      copy.addEventListener('click',async () => {
+        try {
+          await navigator.clipboard.writeText(link.value);
+          status.textContent = 'Ссылка скопирована.';
+        } catch {
+          link.select();
+          status.textContent = 'Ссылка выделена. Скопируйте её вручную.';
+        }
+      });
+    }
+    return {rate:(kind,variant) => current.rates[offsets[kind]+variant],writeParams};
+  }
+
   function mountCleaningCalculator(actions) {
     const catalog = [
       { title:'Диван', model:'sofa', alt:'Зелёный мягкий диван', variants:[['2 места',2500],['3 места',3200],['Угловой',4200]] },
@@ -1035,6 +1200,12 @@
     ];
     const get = id => document.getElementById(id);
     const money = new Intl.NumberFormat('ru-RU', {style:'currency',currency:'RUB',maximumFractionDigits:0});
+    const rateProfile = mountCleaningProfile(catalog,() => {
+      updateQuote();
+      updateCart();
+      for (const refresh of bundlePrices) refresh();
+      actions.reprice();
+    });
 
     const storageKey = 'cleaning-quote-draft-v1';
     const limit = 12;
@@ -1120,6 +1291,7 @@
       }
       const url = new URL(location.href);
       url.hash = '';
+      rateProfile.writeParams(url);
       url.searchParams.set('quote',cart.map(({kind,variant,heavy,quantity}) => [kind,variant,Number(heavy),quantity].join('.')).join('~'));
       shareField.value = url.href;
       shareField.setAttribute('value',url.href);
@@ -1128,7 +1300,7 @@
     const cart = importedCart ?? readCart();
     if (importedCart) saveCart();
     const sameService = (first, second) => first.kind === second.kind && first.variant === second.variant && first.heavy === second.heavy;
-    const rate = item => catalog[item.kind].variants[item.variant][1];
+    const rate = item => rateProfile.rate(item.kind,item.variant);
     const itemSize = item => catalog[item.kind].variants[item.variant][0];
     const itemTotal = item => Math.round(item.quantity * rate(item) * (item.heavy ? 1.25 : 1));
     const total = () => cart.reduce((sum, item) => sum + itemTotal(item), 0);
@@ -1316,6 +1488,7 @@
       else cart.push(item);
     }
 
+    const bundlePrices = [];
     const bundles = [
       {name:'Диван и кресло', note:'Прямой диван на 3 места + стандартное кресло', choices:[[0,1],[1,0]]},
       {name:'Диван и матрас', note:'Прямой диван на 3 места + двуспальный матрас', choices:[[0,1],[2,1]]}
@@ -1328,7 +1501,11 @@
       button.innerHTML = '<span class="clean-bundle-content"><strong></strong><small></small></span><span class="clean-bundle-price"></span>';
       button.querySelector('strong').textContent = bundle.name;
       button.querySelector('small').textContent = bundle.note;
-      button.querySelector('.clean-bundle-price').textContent = money.format(items.reduce((sum,item) => sum + itemTotal(item),0)) + ' +';
+      const refreshPrice = () => {
+        button.querySelector('.clean-bundle-price').textContent = money.format(items.reduce((sum,item) => sum + itemTotal(item),0)) + ' +';
+      };
+      bundlePrices.push(refreshPrice);
+      refreshPrice();
       button.addEventListener('click',() => {
         if (editing) setEditing(null);
         for (const item of items) addToCart({...item});
