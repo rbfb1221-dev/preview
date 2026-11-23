@@ -150,7 +150,7 @@
     }
     @media (max-width: 380px) { .appfields { grid-template-columns: 1fr; } }
 
-    .clean-demo { --background:#171923; --surface:#222533; --ink:#f4f4f8; --muted:#c4c8d7; --line:#474c61; --accent:#ddee9f !important; --tint:#323c32 !important; color-scheme:dark; }
+    .clean-demo { --background:#171923; --surface:#222533; --ink:#f4f4f8; --muted:#c4c8d7; --line:#474c61; color-scheme:dark; }
     .clean-demo .appwrap { width:min(1160px,calc(100% - 48px)); }
     .clean-demo .apptop { background:#171923; }
     .clean-demo .appmark::before { border-color:#17241c; }
@@ -363,7 +363,7 @@
   </template>
   <script>
 
-  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#155b78","#e4f1f6","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
+  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#ddee9f","#323c32","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
   const activeNiche = new URLSearchParams(location.search).get('service');
   if (Object.hasOwn(priorityNiches, activeNiche)) {
     mountServiceApp(priorityNiches[activeNiche]);
@@ -612,16 +612,16 @@
       });
     } else {
       for (const [index, [title, note]] of preset.choices.entries()) {
-      const label = element('label');
-      label.className = 'appchoice';
-      const radio = element('input');
-      radio.type = 'radio';
-      radio.name = 'service';
-      radio.checked = index === 0;
-      radio.addEventListener('change', () => selectService(index));
-      const copy = element('span');
-      copy.append(element('strong', title), element('small', note));
-      label.append(radio, copy);
+        const label = element('label');
+        label.className = 'appchoice';
+        const radio = element('input');
+        radio.type = 'radio';
+        radio.name = 'service';
+        radio.checked = index === 0;
+        radio.addEventListener('change', () => selectService(index));
+        const copy = element('span');
+        copy.append(element('strong', title), element('small', note));
+        label.append(radio, copy);
         get('app-choices').append(label);
       }
       selectService(0);
@@ -752,7 +752,7 @@
       { title:'Диван', image:4846097, alt:'Мягкий диван в гостиной', variants:[['2 места',2500],['3 места',3200],['Угловой',4200]] },
       { title:'Кресло', image:15269215, alt:'Мягкое синее кресло', variants:[['Стандартное',1200],['Большое',1600]] },
       { title:'Матрас', image:6523294, alt:'Матрас в спальне', variants:[['Односпальный',1800],['Двуспальный',2600]] },
-      { title:'Стул', image:7195553, alt:'Стул с мягким сиденьем и спинкой', variants:[['Сиденье',550],['Со спинкой',800]] }
+      { title:'Стул', image:5825351, alt:'Стул с мягким сиденьем', variants:[['Сиденье',550],['Со спинкой',800]] }
     ];
     const get = id => document.getElementById(id);
     const money = new Intl.NumberFormat('ru-RU', {style:'currency',currency:'RUB',maximumFractionDigits:0});
