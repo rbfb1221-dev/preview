@@ -201,9 +201,7 @@
     .clean-sizes label { display:block; position:relative; cursor:pointer; padding:9px 11px; }
     .clean-sizes label:has(:focus-visible) { outline:3px solid var(--accent); outline-offset:2px; }
     .clean-adjustments { display:grid; gap:13px; margin-top:17px; }
-    .clean-adjustments label { display:flex; align-items:center; gap:9px; cursor:pointer; }
-    .clean-adjustments input { width:17px; height:17px; min-height:0; accent-color:var(--accent); }
-    .clean-adjustments small, .clean-total small { display:block; color:var(--muted); font-size:.81rem; font-weight:450; }
+    .clean-total small { display:block; color:var(--muted); font-size:.81rem; font-weight:450; }
     .clean-quantity { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .clean-counter { display:flex; align-items:center; gap:10px; }
     .clean-counter button { background:#303931; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:5px 10px; }
@@ -517,7 +515,6 @@
         <h2 id="clean-furniture"></h2>
         <fieldset><legend id="clean-size-label">Размер</legend><div id="clean-sizes" class="clean-sizes"></div></fieldset>
         <div class="clean-adjustments">
-          <label><input type="checkbox" id="clean-stains"> <span>Сильные загрязнения <small>+25% к стоимости</small></span></label>
           <div class="clean-quantity">
             <span id="clean-quantity-label">Количество</span>
             <div class="clean-counter" role="group" aria-labelledby="clean-quantity-label">
@@ -1213,7 +1210,6 @@
     let variant = 0;
     let quantity = 1;
     let editing = null;
-    const stain = get('clean-stains');
     const image = get('clean-image');
     const checkout = get('clean-checkout');
     const notice = get('clean-notice');
@@ -1253,7 +1249,7 @@
       try {
         const saved = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
         if (!Array.isArray(saved)) return [];
-        return saved.filter(validItem);
+        return saved.filter(validItem).map(({kind,variant,quantity}) => ({kind,variant,quantity}));
       } catch {
         return [];
       }
@@ -1262,7 +1258,7 @@
     function validItem(item) {
       return Boolean(item && Number.isInteger(item.kind) && catalog[item.kind]
         && Number.isInteger(item.variant) && catalog[item.kind].variants[item.variant]
-        && typeof item.heavy === 'boolean' && Number.isInteger(item.quantity)
+        && Number.isInteger(item.quantity)
         && item.quantity >= 1 && item.quantity <= limit);
     }
     function readSharedCart() {
@@ -1272,8 +1268,8 @@
       const rows = value.split('~');
       if (rows.length > shareLimit || rows.some(row => !/^\d\.\d\.[01]\.\d{1,2}$/.test(row))) return null;
       const items = rows.map(row => {
-        const [kind,variant,heavy,quantity] = row.split('.').map(Number);
-        return {kind,variant,heavy:Boolean(heavy),quantity};
+        const [kind,variant,,quantity] = row.split('.').map(Number);
+        return {kind,variant,quantity};
       });
       if (!items.every(validItem)) return null;
       url.searchParams.delete('quote');
@@ -1292,22 +1288,23 @@
       const url = new URL(location.href);
       url.hash = '';
       rateProfile.writeParams(url);
-      url.searchParams.set('quote',cart.map(({kind,variant,heavy,quantity}) => [kind,variant,Number(heavy),quantity].join('.')).join('~'));
+      // Keep the third field for compatibility with links already shared.
+      url.searchParams.set('quote',cart.map(({kind,variant,quantity}) => [kind,variant,0,quantity].join('.')).join('~'));
       shareField.value = url.href;
       shareField.setAttribute('value',url.href);
     }
     const importedCart = readSharedCart();
     const cart = importedCart ?? readCart();
     if (importedCart) saveCart();
-    const sameService = (first, second) => first.kind === second.kind && first.variant === second.variant && first.heavy === second.heavy;
+    const sameService = (first, second) => first.kind === second.kind && first.variant === second.variant;
     const rate = item => rateProfile.rate(item.kind,item.variant);
     const itemSize = item => catalog[item.kind].variants[item.variant][0];
-    const itemTotal = item => Math.round(item.quantity * rate(item) * (item.heavy ? 1.25 : 1));
+    const itemTotal = item => item.quantity * rate(item);
     const total = () => cart.reduce((sum, item) => sum + itemTotal(item), 0);
-    const description = item => catalog[item.kind].title + ' · ' + itemSize(item) + ' × ' + item.quantity + (item.heavy ? ' · сильные загрязнения' : '');
+    const description = item => catalog[item.kind].title + ' · ' + itemSize(item) + ' × ' + item.quantity;
 
     function selected() {
-      return {kind, variant, heavy:stain.checked, quantity};
+      return {kind,variant,quantity};
     }
 
     function updateQuote() {
@@ -1316,15 +1313,14 @@
       count.textContent = item.quantity;
       get('clean-minus').disabled = item.quantity <= 1;
       get('clean-plus').disabled = item.quantity >= limit;
-      get('clean-breakdown').textContent = money.format(rate(item)) + ' × ' + item.quantity + (item.heavy ? ' + 25%' : '');
+      get('clean-breakdown').textContent = money.format(rate(item)) + ' × ' + item.quantity;
       price.textContent = money.format(itemTotal(item));
     }
 
-    function chooseKind(index, initial = {variant:0,quantity:1,heavy:false}) {
+    function chooseKind(index, initial = {variant:0,quantity:1}) {
       kind = index;
       variant = initial.variant;
       quantity = initial.quantity;
-      stain.checked = initial.heavy;
       const item = catalog[index];
       get('clean-furniture').textContent = item.title;
       get('clean-image-title').textContent = item.title;
@@ -1370,7 +1366,6 @@
       get('clean-kinds').append(button);
     }
     chooseKind(0);
-    stain.addEventListener('change',updateQuote);
     get('clean-minus').addEventListener('click',() => { quantity = Math.max(1,quantity-1); updateQuote(); });
     get('clean-plus').addEventListener('click',() => { quantity = Math.min(limit,quantity+1); updateQuote(); });
 
@@ -1404,7 +1399,7 @@
       const name = document.createElement('strong');
       name.textContent = product.title;
       const variantText = document.createElement('small');
-      variantText.textContent = itemSize(item) + (item.heavy ? ' · сильные загрязнения' : '');
+      variantText.textContent = itemSize(item);
       name.append(variantText);
       const thumbnail = document.createElement('span');
       thumbnail.className = 'furniture-sprite';
@@ -1494,7 +1489,7 @@
       {name:'Диван и матрас', note:'Прямой диван на 3 места + двуспальный матрас', choices:[[0,1],[2,1]]}
     ];
     for (const bundle of bundles) {
-      const items = bundle.choices.map(([kind,variant]) => ({kind,variant,heavy:false,quantity:1}));
+      const items = bundle.choices.map(([kind,variant]) => ({kind,variant,quantity:1}));
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'clean-bundle';
