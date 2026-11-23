@@ -239,6 +239,43 @@
       .clean-kinds button .furniture-sprite { width:41px; }
       .clean-intro p { margin-top:8px; font-size:.91rem; }
     }
+
+    .clean-demo .appbar { min-height:60px; }
+    .clean-intro h1 { font-size:clamp(2.1rem,5vw,4.7rem); }
+    .clean-demo .appmain { padding-top:clamp(17px,3vw,35px); }
+    .clean-gallery { box-shadow:inset 0 1px #ffffff0d,0 20px 45px #11161155; }
+    .clean-controls { background:linear-gradient(145deg,#2d382e,var(--surface) 65%); }
+    .clean-visual::after {
+      content:""; position:absolute; inset:8px; border:1px solid #dde8d01c; border-radius:14px;
+      pointer-events:none; z-index:-1;
+    }
+    .clean-visual-caption { top:19px; left:19px; }
+    .clean-demo .appprimary:hover { background:#ecf7cf; }
+    .clean-controls .appsecondary:not(:disabled):hover { background:#3b4b3e; }
+    .clean-total { align-items:end; padding-bottom:4px; }
+    .clean-total small { margin-top:3px; }
+    .clean-demo-price { color:var(--muted); font-size:.79rem; margin:0 0 12px; }
+    #clean-cancel { margin-top:9px; }
+    .clean-order { padding:0 0 13px; }
+    .clean-order p { padding-bottom:5px; font-weight:650; }
+    .clean-order li { grid-template-columns: minmax(0,1fr) auto; gap:7px 12px; padding:10px 0; }
+    .clean-line-item { display:flex; align-items:center; gap:10px; min-width:0; }
+    .clean-line-item .furniture-sprite { flex:0 0 53px; width:53px; background-color:#36473a; border-radius:9px; }
+    .clean-line-item small { display:block; margin-top:3px; font-weight:450; color:var(--muted); }
+    .clean-line-number { font-variant-numeric:tabular-nums; font-weight:700; white-space:nowrap; text-align:right; }
+    .clean-line-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; grid-column:1 / -1; }
+    .clean-line-actions .clean-counter { margin-right:auto; }
+    .clean-line-actions .clean-counter button { min-width:35px; }
+    .clean-line-actions .applink { min-height:35px; }
+    .clean-order-total { border-top:1px solid var(--line); padding-top:8px; text-align:right; }
+    @media(max-width:740px) {
+      .clean-demo .appbar { min-height:51px; }
+      .clean-intro h1 { font-size:clamp(2.15rem,8.5vw,3.35rem); }
+      .clean-visual-caption { top:15px; left:15px; }
+      .clean-demo .clean-controls { padding:15px; }
+      .clean-demo .clean-total output { font-size:1.9rem; }
+      .clean-demo .clean-cart-link button { border-color:#6c8468; }
+    }
   </style>
 </head>
 <body>
@@ -372,8 +409,13 @@
             </div>
           </div>
         </div>
-        <div class="clean-total"><div><span>Предварительно</span><small>Демонстрационные цены</small></div><output id="clean-price" aria-live="polite"></output></div>
-        <button type="button" id="clean-add" class="appprimary">Добавить в заявку <span aria-hidden="true">＋</span></button>
+        <div class="clean-total">
+          <div><span>Предварительно</span><small id="clean-breakdown"></small></div>
+          <output id="clean-price" aria-live="polite"></output>
+        </div>
+        <p class="clean-demo-price">Демо-прайс. Точную цену подтвердит мастер.</p>
+        <button type="button" id="clean-add" class="appprimary"><span id="clean-add-label">Добавить в заявку</span><span aria-hidden="true">＋</span></button>
+        <button type="button" id="clean-cancel" class="applink" hidden>Отменить правку</button>
         <div class="clean-cart-link">
           <button type="button" id="clean-checkout" class="appsecondary" disabled>Перейти к заявке <span aria-hidden="true">→</span></button>
           <p id="clean-notice" role="status"></p>
@@ -622,6 +664,7 @@
       tabs[0].textContent = 'Расчёт';
       cleaningOrder = mountCleaningCalculator({
         checkout: openDetails,
+        calculate: () => showStep(0),
         changed(hasItems) {
           invalidateReceipt();
           if (!hasItems) {
@@ -776,10 +819,13 @@
     ];
     const get = id => document.getElementById(id);
     const money = new Intl.NumberFormat('ru-RU', {style:'currency',currency:'RUB',maximumFractionDigits:0});
-    const cart = [];
+
+    const storageKey = 'cleaning-quote-draft-v1';
+    const limit = 12;
     let kind = 0;
     let variant = 0;
     let quantity = 1;
+    let editing = null;
     const stain = get('clean-stains');
     const image = get('clean-image');
     const checkout = get('clean-checkout');
@@ -790,33 +836,51 @@
     const draft = document.createElement('section');
     draft.className = 'clean-order';
     draft.setAttribute('aria-label', 'Состав заявки');
-    draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total"></strong>';
+    draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total" aria-live="polite"></strong>';
     get('app-form').prepend(draft);
     const draftItems = draft.querySelector('ul');
     const draftTotal = draft.querySelector('strong');
 
+    function readCart() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+        if (!Array.isArray(saved)) return [];
+        return saved.filter(item => item && Number.isInteger(item.kind) && catalog[item.kind]
+          && Number.isInteger(item.variant) && catalog[item.kind].variants[item.variant]
+          && typeof item.heavy === 'boolean' && Number.isInteger(item.quantity)
+          && item.quantity >= 1 && item.quantity <= limit);
+      } catch {
+        return [];
+      }
+    }
+
+    const cart = readCart();
+    const sameService = (first, second) => first.kind === second.kind && first.variant === second.variant && first.heavy === second.heavy;
+    const rate = item => catalog[item.kind].variants[item.variant][1];
+    const itemSize = item => catalog[item.kind].variants[item.variant][0];
+    const itemTotal = item => Math.round(item.quantity * rate(item) * (item.heavy ? 1.25 : 1));
+    const total = () => cart.reduce((sum, item) => sum + itemTotal(item), 0);
+    const description = item => catalog[item.kind].title + ' · ' + itemSize(item) + ' × ' + item.quantity + (item.heavy ? ' · сильные загрязнения' : '');
+
     function selected() {
-      const item = catalog[kind];
-      const [size, rate] = item.variants[variant];
-      const heavy = stain.checked;
-      const amount = Math.round(quantity * rate * (heavy ? 1.25 : 1));
-      return {title:item.title,size,heavy,quantity,amount};
+      return {kind, variant, heavy:stain.checked, quantity};
     }
 
     function updateQuote() {
       const item = selected();
-      get('clean-image-size').textContent = item.size;
+      get('clean-image-size').textContent = itemSize(item);
       count.textContent = item.quantity;
       get('clean-minus').disabled = item.quantity <= 1;
-      get('clean-plus').disabled = item.quantity >= 12;
-      price.textContent = money.format(item.amount);
+      get('clean-plus').disabled = item.quantity >= limit;
+      get('clean-breakdown').textContent = money.format(rate(item)) + ' × ' + item.quantity + (item.heavy ? ' + 25%' : '');
+      price.textContent = money.format(itemTotal(item));
     }
 
-    function chooseKind(index) {
+    function chooseKind(index, initial = {variant:0,quantity:1,heavy:false}) {
       kind = index;
-      variant = 0;
-      quantity = 1;
-      stain.checked = false;
+      variant = initial.variant;
+      quantity = initial.quantity;
+      stain.checked = initial.heavy;
       const item = catalog[index];
       get('clean-furniture').textContent = item.title;
       get('clean-image-title').textContent = item.title;
@@ -835,12 +899,18 @@
         input.type = 'radio';
         input.name = 'clean-size';
         input.className = 'sr';
-        input.checked = i === 0;
+        input.checked = i === variant;
         input.addEventListener('change', () => { variant = i; updateQuote(); });
         label.append(input, name);
         choices.append(label);
       }
       updateQuote();
+    }
+
+    function setEditing(item) {
+      editing = item;
+      get('clean-add-label').textContent = item ? 'Сохранить позицию' : 'Добавить в заявку';
+      get('clean-cancel').hidden = !item;
     }
 
     for (const [index, item] of catalog.entries()) {
@@ -849,50 +919,128 @@
       const thumbnail = document.createElement('span');
       thumbnail.className = 'furniture-sprite';
       thumbnail.dataset.model = item.model;
-      thumbnail.setAttribute('aria-hidden', 'true');
-      button.append(thumbnail, item.title);
-      button.addEventListener('click', () => chooseKind(index));
+      thumbnail.setAttribute('aria-hidden','true');
+      button.append(thumbnail,item.title);
+      button.addEventListener('click',() => chooseKind(index));
       tabs.push(button);
       get('clean-kinds').append(button);
     }
     chooseKind(0);
-    stain.addEventListener('change', updateQuote);
-    get('clean-minus').addEventListener('click', () => { quantity = Math.max(1,quantity - 1); updateQuote(); });
-    get('clean-plus').addEventListener('click', () => { quantity = Math.min(12,quantity + 1); updateQuote(); });
+    stain.addEventListener('change',updateQuote);
+    get('clean-minus').addEventListener('click',() => { quantity = Math.max(1,quantity-1); updateQuote(); });
+    get('clean-plus').addEventListener('click',() => { quantity = Math.min(limit,quantity+1); updateQuote(); });
 
-    const total = () => cart.reduce((sum, item) => sum + item.amount, 0);
-    const description = item => item.title + ' · ' + item.size + ' × ' + item.quantity + (item.heavy ? ' · сильные загрязнения' : '');
+    function saveCart() {
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify(cart));
+      } catch {
+        // Keep the draft in memory when browser storage is unavailable.
+      }
+    }
+
+    function actionButton(text, label, onClick, style = '') {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = style;
+      button.textContent = text;
+      button.setAttribute('aria-label',label);
+      button.addEventListener('click',onClick);
+      return button;
+    }
+
+    function changeCart() {
+      saveCart();
+      updateCart();
+      actions.changed(Boolean(cart.length));
+    }
+
+    function renderCartItem(item, index) {
+      const product = catalog[item.kind];
+      const row = document.createElement('li');
+      const name = document.createElement('strong');
+      name.textContent = product.title;
+      const variantText = document.createElement('small');
+      variantText.textContent = itemSize(item) + (item.heavy ? ' · сильные загрязнения' : '');
+      name.append(variantText);
+      const thumbnail = document.createElement('span');
+      thumbnail.className = 'furniture-sprite';
+      thumbnail.dataset.model = product.model;
+      thumbnail.setAttribute('aria-hidden','true');
+      const productLabel = document.createElement('div');
+      productLabel.className = 'clean-line-item';
+      productLabel.append(thumbnail,name);
+      const sum = document.createElement('span');
+      sum.className = 'clean-line-number';
+      sum.textContent = money.format(itemTotal(item));
+
+      const controls = document.createElement('div');
+      controls.className = 'clean-line-actions';
+      const stepper = document.createElement('div');
+      stepper.className = 'clean-counter';
+      const number = document.createElement('output');
+      number.textContent = item.quantity;
+      const label = product.title + ', позиция ' + (index+1);
+
+      function changeQuantity(delta) {
+        item.quantity += delta;
+        changeCart();
+        const nextButtons = draftItems.children[index].querySelectorAll('.clean-counter button');
+        const target = nextButtons[delta > 0 ? 1 : 0];
+        (target.disabled ? nextButtons[delta > 0 ? 0 : 1] : target).focus();
+      }
+
+      const minus = actionButton('−','Уменьшить количество: ' + label, () => changeQuantity(-1));
+      const plus = actionButton('+','Увеличить количество: ' + label, () => changeQuantity(1));
+      minus.disabled = item.quantity <= 1;
+      plus.disabled = item.quantity >= limit;
+      stepper.append(minus,number,plus);
+
+      const edit = actionButton('Изменить','Изменить: ' + label, () => {
+        setEditing(item);
+        chooseKind(item.kind,item);
+        actions.calculate();
+      },'applink');
+      const remove = actionButton('Удалить','Удалить: ' + label, () => {
+        if (editing === item) setEditing(null);
+        cart.splice(index,1);
+        changeCart();
+        if (cart.length) draftItems.children[Math.min(index,cart.length-1)].querySelector('.applink').focus();
+      },'applink');
+      controls.append(stepper,edit,remove);
+      row.append(productLabel,sum,controls);
+      return row;
+    }
+
     function updateCart() {
       checkout.disabled = !cart.length;
       notice.textContent = cart.length ? 'Позиций в заявке: ' + cart.length + '.' : '';
       checkout.firstChild.textContent = cart.length ? 'К заявке · ' + money.format(total()) + ' ' : 'Перейти к заявке ';
       draftTotal.textContent = 'Предварительно ' + money.format(total());
-      draftItems.replaceChildren();
-      for (const [index, item] of cart.entries()) {
-        const row = document.createElement('li');
-        row.append(description(item) + ' · ' + money.format(item.amount));
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'applink';
-        button.textContent = 'Удалить';
-        button.setAttribute('aria-label', 'Удалить: ' + item.title + ', позиция ' + (index + 1));
-        button.addEventListener('click', () => {
-          cart.splice(index, 1);
-          updateCart();
-          actions.changed(Boolean(cart.length));
-          if (cart.length) draftItems.querySelectorAll('button')[Math.min(index, cart.length - 1)]?.focus();
-        });
-        row.append(button);
-        draftItems.append(row);
-      }
+      draftItems.replaceChildren(...cart.map(renderCartItem));
     }
 
-    get('clean-add').addEventListener('click', () => {
-      cart.push(selected());
-      updateCart();
-      actions.changed(true);
+    get('clean-add').addEventListener('click',() => {
+      const item = selected();
+      if (editing) {
+        const index = cart.indexOf(editing);
+        if (index >= 0) cart[index] = item;
+        else cart.push(item);
+        setEditing(null);
+        changeCart();
+        actions.checkout();
+      } else {
+        const duplicate = cart.find(entry => sameService(entry,item) && entry.quantity + item.quantity <= limit);
+        if (duplicate) duplicate.quantity += item.quantity;
+        else cart.push(item);
+        changeCart();
+      }
     });
-    checkout.addEventListener('click', actions.checkout);
+    get('clean-cancel').addEventListener('click',() => {
+      setEditing(null);
+      actions.checkout();
+    });
+    checkout.addEventListener('click',actions.checkout);
+    updateCart();
 
     return {
       receipt() {
