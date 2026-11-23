@@ -149,6 +149,76 @@
       .appchoice { gap: 6px; padding: 8px; min-height: 74px; }
     }
     @media (max-width: 380px) { .appfields { grid-template-columns: 1fr; } }
+
+    .clean-demo { --background:#171923; --surface:#222533; --ink:#f4f4f8; --muted:#c4c8d7; --line:#474c61; --accent:#ddee9f !important; --tint:#323c32 !important; color-scheme:dark; }
+    .clean-demo .appwrap { width:min(1160px,calc(100% - 48px)); }
+    .clean-demo .apptop { background:#171923; }
+    .clean-demo .appmark::before { border-color:#17241c; }
+    .clean-demo .appnav button:disabled { color:var(--muted); }
+    .clean-demo .appdemo { border-radius:20px; border:1px solid var(--line); padding:4px 10px; }
+    .clean-demo .appmain { padding-top:clamp(22px,4vw,46px); }
+    .clean-demo .appgrid { grid-template-columns:minmax(0,1fr); }
+    .clean-demo:not(.clean-calculating) .appgrid { width:min(760px,100%); margin-inline:auto; }
+    .clean-demo .appsummary { display:none; }
+    .clean-demo #app-service { padding:0; background:none; border:none; }
+    .clean-intro h1 { max-width:none; font-size:clamp(2.3rem,5.8vw,5.3rem); font-weight:760; letter-spacing:-.075em; line-height:.96; text-wrap:balance; }
+    .clean-intro p { margin-top:12px; color:var(--muted); }
+    .clean-workbench { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(325px,1fr); gap:14px; margin-top:22px; align-items:stretch; }
+    .clean-gallery, .clean-controls { min-width:0; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:var(--surface); }
+    .clean-gallery { display:flex; flex-direction:column; }
+    .clean-visual { position:relative; min-height:332px; flex:1; isolation:isolate; background:#34413e; overflow:hidden; }
+    .clean-visual img { display:block; width:100%; height:100%; inset:0; position:absolute; z-index:-2; object-fit:cover; object-position:center 58%; }
+    .clean-visual::after { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(0deg,#151722f5,transparent 68%); pointer-events:none; }
+    .clean-visual-caption { position:absolute; bottom:0; left:0; right:0; padding:clamp(16px,3vw,30px); color:#fff; }
+    .clean-visual-caption strong { display:block; font-size:clamp(1.45rem,3vw,2.65rem); line-height:1.08; letter-spacing:-.05em; }
+    .clean-visual-caption span { color:#e8edf3; font-size:.95rem; display:block; margin-top:5px; }
+    .clean-kinds { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; padding:10px; }
+    .clean-kinds button, .clean-sizes label { min-width:0; border:1px solid var(--line); background:#2a2e3f; color:var(--ink); border-radius:10px; }
+    .clean-kinds button { padding:8px 4px; }
+    .clean-kinds button img { display:block; width:100%; height:46px; object-fit:cover; border-radius:6px; margin-bottom:4px; }
+    .clean-kinds button[aria-pressed="true"], .clean-sizes label:has(:checked) { border-color:var(--accent); background:var(--tint); color:var(--accent); }
+    .clean-controls { padding:clamp(16px,2.5vw,24px); }
+    .clean-controls h2 { margin-bottom:17px; font-size:clamp(1.55rem,3vw,2.25rem); }
+    .clean-controls legend { margin-bottom:7px; color:var(--muted); font-size:.87rem; font-weight:650; }
+    .clean-sizes { display:flex; flex-wrap:wrap; gap:6px; }
+    .clean-sizes label { display:block; position:relative; cursor:pointer; padding:9px 11px; }
+    .clean-sizes label:has(:focus-visible) { outline:3px solid var(--accent); outline-offset:2px; }
+    .clean-adjustments { display:grid; gap:13px; margin-top:17px; }
+    .clean-adjustments label { display:flex; align-items:center; gap:9px; cursor:pointer; }
+    .clean-adjustments input { width:17px; height:17px; min-height:0; accent-color:var(--accent); }
+    .clean-adjustments small, .clean-total small { display:block; color:var(--muted); font-size:.81rem; font-weight:450; }
+    .clean-quantity { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .clean-counter { display:flex; align-items:center; gap:10px; }
+    .clean-counter button { background:#2a2e3f; color:var(--ink); border:1px solid var(--line); border-radius:7px; padding:5px 10px; }
+    .clean-counter button:disabled { color:#9ea5bb; cursor:default; }
+    .clean-counter output { min-width:2ch; text-align:center; }
+    .clean-total { display:flex; gap:10px; justify-content:space-between; align-items:center; border-top:1px solid var(--line); margin-top:15px; padding-block:11px; }
+    .clean-total output { color:var(--accent); font-size:clamp(1.5rem,3vw,2.25rem); font-weight:750; white-space:nowrap; letter-spacing:-.04em; }
+    .clean-demo .appprimary { background:var(--accent); color:#17241c; }
+    .clean-controls .appprimary, .clean-cart-link button { width:100%; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .clean-cart-link { margin-top:8px; }
+    .clean-cart-link button:disabled { color:#aab1c2; cursor:default; }
+    .clean-cart-link p { margin-top:6px; color:var(--muted); font-size:.88rem; }
+    .clean-cart-link p:empty { display:none; }
+    .clean-demo .appfields input, .clean-demo .appfields select, .clean-demo .apptelephone { border-color:#6a7086; }
+    .clean-demo .apptelephone span, .clean-demo .appfields input::placeholder, .clean-demo .apptelephone input::placeholder { color:#babfd1; }
+    .clean-demo .apptelephone.has-number span { color:var(--ink); }
+    .clean-demo .apperror { color:#ffb9b9; }
+    .clean-order { border-bottom:1px solid var(--line); margin-bottom:15px; padding-bottom:12px; }
+    .clean-order p { color:var(--muted); margin-bottom:7px; }
+    .clean-order ul { list-style:none; margin:0; padding:0; }
+    .clean-order li { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:4px 9px; padding:8px 0; border-bottom:1px solid var(--line); }
+    .clean-order li button { justify-self:end; }
+    .clean-order-total { display:block; margin-top:10px; color:var(--accent); }
+    @media(max-width:740px) {
+      .clean-demo .appwrap { width:calc(100% - 26px); }
+      .clean-workbench { grid-template-columns:minmax(0,1fr); gap:9px; margin-top:14px; }
+      .clean-visual { min-height:210px; }
+      .clean-kinds { padding:7px; gap:4px; }
+      .clean-kinds button { font-size:.84rem; }
+      .clean-kinds button img { height:36px; }
+      .clean-intro p { margin-top:8px; font-size:.91rem; }
+    }
   </style>
 </head>
 <body>
@@ -254,9 +324,46 @@
       </div>
     </main>
   </template>
+
+  <template id="clean-calculator">
+    <div class="clean-intro">
+      <h1 id="clean-title" tabindex="-1">Сколько стоит химчистка?</h1>
+      <p>Выберите мебель и размер. Ориентир появится сразу.</p>
+    </div>
+    <div class="clean-workbench">
+      <div class="clean-gallery">
+        <div class="clean-visual">
+          <img id="clean-image" width="1200" height="800" fetchpriority="high" alt="">
+          <div class="clean-visual-caption"><strong id="clean-image-title"></strong><span id="clean-image-size"></span></div>
+        </div>
+        <div id="clean-kinds" class="clean-kinds" role="group" aria-label="Вид мебели"></div>
+      </div>
+      <section class="clean-controls" aria-labelledby="clean-furniture">
+        <h2 id="clean-furniture"></h2>
+        <fieldset><legend id="clean-size-label">Размер</legend><div id="clean-sizes" class="clean-sizes"></div></fieldset>
+        <div class="clean-adjustments">
+          <label><input type="checkbox" id="clean-stains"> <span>Сильные загрязнения <small>+25% к стоимости</small></span></label>
+          <div class="clean-quantity">
+            <span id="clean-quantity-label">Количество</span>
+            <div class="clean-counter" role="group" aria-labelledby="clean-quantity-label">
+              <button type="button" id="clean-minus" aria-label="Уменьшить количество">−</button>
+              <output id="clean-count" aria-live="polite">1</output>
+              <button type="button" id="clean-plus" aria-label="Увеличить количество">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="clean-total"><div><span>Предварительно</span><small>Демонстрационные цены</small></div><output id="clean-price" aria-live="polite"></output></div>
+        <button type="button" id="clean-add" class="appprimary">Добавить в заявку <span aria-hidden="true">＋</span></button>
+        <div class="clean-cart-link">
+          <button type="button" id="clean-checkout" class="appsecondary" disabled>Перейти к заявке <span aria-hidden="true">→</span></button>
+          <p id="clean-notice" role="status"></p>
+        </div>
+      </section>
+    </div>
+  </template>
   <script>
 
-  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Диван снова будет чистым.","description":"Покажите диван и пятна на фото. Мастер уточнит цену чистки и предложит время выезда.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#155b78","#e4f1f6","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Размер или число мест","example":"3 места","placeholder":"Например, 3 места","wide":false},{"label":"Что нужно почистить","example":"Пятно от кофе на сиденье","placeholder":"Расскажите о пятнах или запахе","wide":true},{"label":"Район","example":"Центральный","placeholder":"Район или улица","wide":false}]}};
+  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#155b78","#e4f1f6","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
   const activeNiche = new URLSearchParams(location.search).get('service');
   if (Object.hasOwn(priorityNiches, activeNiche)) {
     mountServiceApp(priorityNiches[activeNiche]);
@@ -410,6 +517,7 @@
   }
 
   function mountServiceApp(preset) {
+    const cleanTemplate = preset.calculator ? document.getElementById('clean-calculator').content.cloneNode(true) : null;
     document.body.replaceChildren(document.getElementById('service-app').content.cloneNode(true));
     document.body.classList.add('service-app');
     document.title = preset.name + ' — демо заявки';
@@ -429,18 +537,28 @@
     get('app-title').textContent = preset.title;
     get('app-lede').textContent = preset.description;
     get('app-price-note').textContent = preset.note;
-    const heroImage = get('app-photo');
-    heroImage.src = 'https://images.pexels.com/photos/' + preset.image + '/pexels-photo-' + preset.image + '.jpeg?auto=compress&cs=tinysrgb&w=1280';
-    heroImage.alt = preset.alt;
+
+    if (cleanTemplate) {
+      document.body.classList.add('clean-demo', 'clean-calculating');
+      get('app-hero').hidden = true;
+      const section = get('app-service');
+      section.replaceChildren(cleanTemplate);
+      section.setAttribute('aria-labelledby', 'clean-title');
+    } else {
+      const heroImage = get('app-photo');
+      heroImage.src = furniturePhoto(preset.image, 1280);
+      heroImage.alt = preset.alt;
+    }
 
     const tabs = Array.from(document.querySelectorAll('.appnav button'));
     const screens = ['app-service', 'app-details', 'app-receipt'].map(get);
-    const headings = ['service-title', 'details-title', 'receipt-title'].map(get);
+    const headings = [cleanTemplate ? 'clean-title' : 'service-title', 'details-title', 'receipt-title'].map(get);
     let step = 0;
     let detailsOpened = false;
     let receiptReady = false;
     let service = 0;
     let photoUrl;
+    let cleaningOrder;
 
     function updateTabs() {
       tabs[1].disabled = !detailsOpened;
@@ -455,16 +573,18 @@
       step = index;
       updateTabs();
       for (const [number, screen] of screens.entries()) screen.hidden = number !== index;
-      get('app-hero').hidden = index !== 0;
+      get('app-hero').hidden = Boolean(cleanTemplate) || index !== 0;
+      document.body.classList.toggle('clean-calculating', Boolean(cleanTemplate) && index === 0);
       headings[index].focus({preventScroll: true});
       window.scrollTo(0, 0);
     }
 
     for (const [index, button] of tabs.entries()) button.addEventListener('click', () => showStep(index));
-    get('app-next').addEventListener('click', () => {
+    function openDetails() {
       detailsOpened = true;
       showStep(1);
-    });
+    }
+    if (!cleanTemplate) get('app-next').addEventListener('click', openDetails);
     get('app-edit').addEventListener('click', () => showStep(1));
 
     function invalidateReceipt() {
@@ -478,7 +598,20 @@
       invalidateReceipt();
     }
 
-    for (const [index, [title, note]] of preset.choices.entries()) {
+    if (cleanTemplate) {
+      tabs[0].textContent = 'Расчёт';
+      cleaningOrder = mountCleaningCalculator({
+        checkout: openDetails,
+        changed(hasItems) {
+          invalidateReceipt();
+          if (!hasItems) {
+            detailsOpened = false;
+            showStep(0);
+          }
+        }
+      });
+    } else {
+      for (const [index, [title, note]] of preset.choices.entries()) {
       const label = element('label');
       label.className = 'appchoice';
       const radio = element('input');
@@ -489,9 +622,10 @@
       const copy = element('span');
       copy.append(element('strong', title), element('small', note));
       label.append(radio, copy);
-      get('app-choices').append(label);
+        get('app-choices').append(label);
+      }
+      selectService(0);
     }
-    selectService(0);
 
     const controls = preset.fields.map(field => {
       const label = element('label', field.label + (field.optional ? ' (по желанию)' : ''));
@@ -589,7 +723,7 @@
         phone.reportValidity();
         return;
       }
-      const pairs = [[preset.type, preset.choices[service][0]]];
+      const pairs = cleaningOrder ? cleaningOrder.receipt() : [[preset.type, preset.choices[service][0]]];
       for (const [index, control] of controls.entries()) {
         const value = control.value.trim();
         if (value) pairs.push([preset.fields[index].label, value]);
@@ -607,6 +741,140 @@
       receiptReady = true;
       showStep(2);
     });
+  }
+
+  function furniturePhoto(id, width) {
+    return 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + width;
+  }
+
+  function mountCleaningCalculator(actions) {
+    const catalog = [
+      { title:'Диван', image:4846097, alt:'Мягкий диван в гостиной', variants:[['2 места',2500],['3 места',3200],['Угловой',4200]] },
+      { title:'Кресло', image:15269215, alt:'Мягкое синее кресло', variants:[['Стандартное',1200],['Большое',1600]] },
+      { title:'Матрас', image:6523294, alt:'Матрас в спальне', variants:[['Односпальный',1800],['Двуспальный',2600]] },
+      { title:'Стул', image:7195553, alt:'Стул с мягким сиденьем и спинкой', variants:[['Сиденье',550],['Со спинкой',800]] }
+    ];
+    const get = id => document.getElementById(id);
+    const money = new Intl.NumberFormat('ru-RU', {style:'currency',currency:'RUB',maximumFractionDigits:0});
+    const cart = [];
+    let kind = 0;
+    let variant = 0;
+    let quantity = 1;
+    const stain = get('clean-stains');
+    const image = get('clean-image');
+    const checkout = get('clean-checkout');
+    const notice = get('clean-notice');
+    const count = get('clean-count');
+    const price = get('clean-price');
+    const tabs = [];
+    const draft = document.createElement('section');
+    draft.className = 'clean-order';
+    draft.setAttribute('aria-label', 'Состав заявки');
+    draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total"></strong>';
+    get('app-form').prepend(draft);
+    const draftItems = draft.querySelector('ul');
+    const draftTotal = draft.querySelector('strong');
+
+    function selected() {
+      const item = catalog[kind];
+      const [size, rate] = item.variants[variant];
+      const heavy = stain.checked;
+      const amount = Math.round(quantity * rate * (heavy ? 1.25 : 1));
+      return {title:item.title,size,heavy,quantity,amount};
+    }
+
+    function updateQuote() {
+      const item = selected();
+      get('clean-image-size').textContent = item.size;
+      count.textContent = item.quantity;
+      get('clean-minus').disabled = item.quantity <= 1;
+      get('clean-plus').disabled = item.quantity >= 12;
+      price.textContent = money.format(item.amount);
+    }
+
+    function chooseKind(index) {
+      kind = index;
+      variant = 0;
+      quantity = 1;
+      stain.checked = false;
+      const item = catalog[index];
+      get('clean-furniture').textContent = item.title;
+      get('clean-image-title').textContent = item.title;
+      image.alt = item.alt;
+      image.src = furniturePhoto(item.image, 1200);
+      for (const [current, button] of tabs.entries()) button.setAttribute('aria-pressed', String(current === index));
+      const choices = get('clean-sizes');
+      choices.replaceChildren();
+      for (const [i,[name]] of item.variants.entries()) {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'clean-size';
+        input.className = 'sr';
+        input.checked = i === 0;
+        input.addEventListener('change', () => { variant = i; updateQuote(); });
+        label.append(input, name);
+        choices.append(label);
+      }
+      updateQuote();
+    }
+
+    for (const [index, item] of catalog.entries()) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      const thumbnail = document.createElement('img');
+      thumbnail.src = furniturePhoto(item.image, 235);
+      thumbnail.alt = '';
+      button.append(thumbnail, item.title);
+      button.addEventListener('click', () => chooseKind(index));
+      tabs.push(button);
+      get('clean-kinds').append(button);
+    }
+    chooseKind(0);
+    stain.addEventListener('change', updateQuote);
+    get('clean-minus').addEventListener('click', () => { quantity = Math.max(1,quantity - 1); updateQuote(); });
+    get('clean-plus').addEventListener('click', () => { quantity = Math.min(12,quantity + 1); updateQuote(); });
+
+    const total = () => cart.reduce((sum, item) => sum + item.amount, 0);
+    const description = item => item.title + ' · ' + item.size + ' × ' + item.quantity + (item.heavy ? ' · сильные загрязнения' : '');
+    function updateCart() {
+      checkout.disabled = !cart.length;
+      checkout.firstChild.textContent = cart.length ? 'К заявке · ' + money.format(total()) + ' ' : 'Перейти к заявке ';
+      draftTotal.textContent = 'Предварительно ' + money.format(total());
+      draftItems.replaceChildren();
+      for (const [index, item] of cart.entries()) {
+        const row = document.createElement('li');
+        row.append(description(item) + ' · ' + money.format(item.amount));
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'applink';
+        button.textContent = 'Удалить';
+        button.setAttribute('aria-label', 'Удалить: ' + item.title + ', позиция ' + (index + 1));
+        button.addEventListener('click', () => {
+          cart.splice(index, 1);
+          updateCart();
+          actions.changed(Boolean(cart.length));
+          if (cart.length) draftItems.querySelectorAll('button')[Math.min(index, cart.length - 1)]?.focus();
+        });
+        row.append(button);
+        draftItems.append(row);
+      }
+    }
+
+    get('clean-add').addEventListener('click', () => {
+      const item = selected();
+      cart.push(item);
+      updateCart();
+      actions.changed(true);
+      notice.textContent = 'Добавлено: ' + item.title.toLowerCase() + '. Позиций в заявке: ' + cart.length + '.';
+    });
+    checkout.addEventListener('click', actions.checkout);
+
+    return {
+      receipt() {
+        return [['Что почистить', cart.map(description).join('; ')], ['Ориентир по демо-прайсу', money.format(total())]];
+      }
+    };
   }
   </script>
 </body>
