@@ -276,6 +276,42 @@
       .clean-demo .clean-total output { font-size:1.9rem; }
       .clean-demo .clean-cart-link button { border-color:#6c8468; }
     }
+
+    .clean-demo.clean-checkout .appgrid { width:100%; }
+    .clean-demo.clean-checkout #app-details {
+      display:grid; grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr); grid-template-areas:"title title" "form summary";
+      gap:16px 20px; align-items:start; padding:0; background:none; border:0;
+    }
+    .clean-demo.clean-checkout #details-title { grid-area:title; font-size:clamp(1.9rem,4vw,3.1rem); margin:0; }
+    .clean-demo.clean-checkout #app-form, .clean-demo.clean-checkout .clean-order {
+      align-self:start; background:var(--surface); border:1px solid var(--line);
+      border-radius:18px; padding:clamp(16px,3vw,25px); margin:0; min-width:0;
+    }
+    .clean-demo.clean-checkout #app-form { grid-area:form; }
+    .clean-demo.clean-checkout .clean-order { grid-area:summary; position:sticky; top:16px; }
+    .clean-demo .clean-order p { color:var(--ink); font-size:1.03rem; }
+    .clean-demo .clean-order-total { font-size:1.13rem; }
+    .clean-details-note { margin-bottom:12px; color:var(--muted); font-size:.88rem; }
+    .clean-preference { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+    .clean-preference input, .clean-preference select { border-color:#69766b; background:var(--surface); color:var(--ink); }
+    .apptiles { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:9px; }
+    .apptile { margin:0; min-width:0; }
+    .apptile img { display:block; height:92px; width:100%; border:1px solid var(--line); border-radius:9px; object-fit:cover; }
+    .apptile button { min-height:35px; text-align:left; }
+    .app-message .apptiles { margin:8px 14px 14px; }
+    .app-message .apptile img { margin:0; max-height:none; width:100%; }
+    .app-copy-status { margin-top:8px; color:var(--muted); }
+    .app-copy-status:empty { display:none; }
+    @media(max-width:740px) {
+      .clean-demo.clean-checkout #app-details { grid-template-columns:minmax(0,1fr); grid-template-areas:"title" "summary" "form"; gap:10px; }
+      .clean-demo.clean-checkout .clean-order { position:static; }
+      .clean-demo.clean-calculating:has(#clean-checkout:not(:disabled)) .appmain { padding-bottom:calc(138px + env(safe-area-inset-bottom)); }
+      .clean-demo.clean-calculating #clean-checkout:not(:disabled) {
+        position:fixed; z-index:4; left:10px; right:10px; bottom:calc(67px + env(safe-area-inset-bottom)); width:auto;
+        min-height:49px; background:var(--accent); color:#17241c; border:1px solid var(--accent); box-shadow:0 6px 24px #0007;
+      }
+    }
+    @media(max-width:380px) { .clean-preference { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -346,7 +382,7 @@
             <div class="appupload">
               <label for="app-file"><strong>Приложить фото</strong><small id="app-file-label">JPG, PNG или WebP · до 4 МБ · по желанию</small></label>
               <input id="app-file" class="sr" type="file" accept="image/jpeg,image/png,image/webp">
-              <div class="appattachment" id="app-attachment" hidden><img id="app-thumb" alt="Прикреплённое фото"><button type="button" class="applink" id="app-file-remove">Удалить фото</button></div>
+              <div class="apptiles" id="app-attachment" hidden></div>
               <p class="apperror" id="app-file-error" role="status" hidden></p>
             </div>
             <label class="applabel" for="app-tel">Телефон для связи</label>
@@ -366,11 +402,13 @@
           <div class="app-message">
             <div class="app-message-header"><strong>Новая заявка</strong><span>Telegram</span></div>
             <dl id="app-message"></dl>
-            <img id="app-receipt-photo" alt="Фото к заявке" hidden>
+            <div class="apptiles" id="app-receipt-photos" hidden></div>
           </div>
           <div class="appactions">
             <button type="button" class="appsecondary" id="app-edit">Изменить заявку</button>
+            <button type="button" class="appsecondary" id="app-copy" hidden>Скопировать текст заявки</button>
           </div>
+          <p class="app-copy-status" id="app-copy-status" role="status"></p>
         </section>
         <aside class="appsummary" aria-labelledby="app-summary-title">
           <h2 id="app-summary-title">Ваша заявка</h2>
@@ -425,7 +463,7 @@
   </template>
   <script>
 
-  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#dcecb6","#354339","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Когда удобно","example":"В субботу после 12:00","placeholder":"День и время","optional":true},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
+  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Сколько стоит химчистка?","description":"Выберите мебель и размер. Ориентир появится сразу.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#dcecb6","#354339","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Район или адрес","example":"Центральный район","placeholder":"Например, Центральный район"},{"label":"Комментарий","example":"Пятно от кофе на сиденье","placeholder":"Что важно знать мастеру","optional":true,"wide":true}],"calculator":true}};
   const activeNiche = new URLSearchParams(location.search).get('service');
   if (Object.hasOwn(priorityNiches, activeNiche)) {
     mountServiceApp(priorityNiches[activeNiche]);
@@ -619,7 +657,7 @@
     let detailsOpened = false;
     let receiptReady = false;
     let service = 0;
-    let photoUrl;
+    const photos = [];
     let cleaningOrder;
 
     function updateTabs() {
@@ -637,6 +675,7 @@
       for (const [number, screen] of screens.entries()) screen.hidden = number !== index;
       get('app-hero').hidden = Boolean(cleanTemplate) || index !== 0;
       document.body.classList.toggle('clean-calculating', Boolean(cleanTemplate) && index === 0);
+      document.body.classList.toggle('clean-checkout', Boolean(cleanTemplate) && index === 1);
       headings[index].focus({preventScroll: true});
       window.scrollTo(0, 0);
     }
@@ -733,50 +772,98 @@
     phone.addEventListener('input', formatPhone);
 
     const form = get('app-form');
+    const visit = cleanTemplate ? addVisitPreference(form) : null;
+    if (cleanTemplate) {
+      const note = element('p', 'Мастер уточнит цену и подтвердит удобное время.');
+      note.className = 'clean-details-note';
+      form.prepend(note);
+    }
     form.addEventListener('input', invalidateReceipt);
     form.addEventListener('change', invalidateReceipt);
     get('app-example').addEventListener('click', () => {
       for (const [index, field] of preset.fields.entries()) controls[index].value = field.example;
+      visit?.fillExample();
       phone.value = '9000000000';
       formatPhone();
       invalidateReceipt();
     });
 
+
     const fileInput = get('app-file');
     const error = get('app-file-error');
-    const receiptPhoto = get('app-receipt-photo');
-    function clearPhoto() {
-      if (photoUrl) URL.revokeObjectURL(photoUrl);
-      photoUrl = undefined;
-      get('app-thumb').removeAttribute('src');
-      receiptPhoto.removeAttribute('src');
-      receiptPhoto.hidden = true;
-      get('app-attachment').hidden = true;
-      get('app-file-label').textContent = 'JPG, PNG или WebP · до 4 МБ · по желанию';
-      error.hidden = true;
+    const attachment = get('app-attachment');
+    const receiptPhotos = get('app-receipt-photos');
+    const photoLimit = cleanTemplate ? 3 : 1;
+    fileInput.multiple = photoLimit > 1;
+    const fileHint = photoLimit > 1 ? 'До 3 фото · JPG, PNG или WebP · до 4 МБ каждое' : 'JPG, PNG или WebP · до 4 МБ · по желанию';
+
+    function photoTile(photo, index, editable) {
+      const tile = element('figure');
+      tile.className = 'apptile';
+      const img = element('img');
+      img.src = photo.url;
+      img.alt = 'Фото к заявке ' + (index + 1);
+      tile.append(img);
+      if (editable) {
+        const remove = element('button', 'Удалить');
+        remove.type = 'button';
+        remove.className = 'applink';
+        remove.setAttribute('aria-label', 'Удалить фото ' + (index + 1));
+        remove.addEventListener('click', () => {
+          URL.revokeObjectURL(photo.url);
+          photos.splice(index,1);
+          renderPhotos();
+          invalidateReceipt();
+          error.hidden = true;
+          const nextTile = attachment.children[Math.min(index,photos.length - 1)];
+          (nextTile?.querySelector('button') || fileInput).focus();
+        });
+        tile.append(remove);
+      }
+      return tile;
     }
+    function renderPhotos() {
+      attachment.replaceChildren(...photos.map((photo,index) => photoTile(photo,index,true)));
+      attachment.hidden = !photos.length;
+      get('app-file-label').textContent = photos.length ? 'Фото: ' + photos.length + ' из ' + photoLimit : fileHint;
+    }
+    renderPhotos();
 
     fileInput.addEventListener('change', () => {
-      clearPhoto();
-      const file = fileInput.files[0];
-      if (!file) return;
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4 * 1024 * 1024) {
-        fileInput.value = '';
-        error.textContent = 'Выберите JPG, PNG или WebP размером до 4 МБ.';
-        error.hidden = false;
-        return;
-      }
-      photoUrl = URL.createObjectURL(file);
-      get('app-thumb').src = photoUrl;
-      get('app-file-label').textContent = file.name;
-      get('app-attachment').hidden = false;
-    });
-    get('app-file-remove').addEventListener('click', () => {
+      const selected = Array.from(fileInput.files);
       fileInput.value = '';
-      clearPhoto();
-      invalidateReceipt();
-      fileInput.focus();
+      if (!selected.length) return;
+      const valid = selected.filter(file => ['image/jpeg','image/png','image/webp'].includes(file.type) && file.size <= 4 * 1024 * 1024);
+      if (valid.length && photoLimit === 1 && photos.length) URL.revokeObjectURL(photos.pop().url);
+      let capacityExceeded = false;
+      for (const file of valid) {
+        if (photos.some(photo => photo.name === file.name && photo.size === file.size && photo.modified === file.lastModified)) continue;
+        if (photos.length >= photoLimit) {
+          capacityExceeded = true;
+          break;
+        }
+        photos.push({url:URL.createObjectURL(file), name:file.name, size:file.size, modified:file.lastModified});
+      }
+      error.textContent = selected.length !== valid.length ? 'Выберите JPG, PNG или WebP размером до 4 МБ.'
+        : capacityExceeded ? 'К заявке можно приложить до трёх фото.' : '';
+      error.hidden = !error.textContent;
+      renderPhotos();
     });
+
+    const copy = get('app-copy');
+    const copyStatus = get('app-copy-status');
+    let receiptText = '';
+    if (cleanTemplate && navigator.clipboard?.writeText) {
+      copy.hidden = false;
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(receiptText);
+          copyStatus.textContent = 'Текст заявки скопирован.';
+        } catch {
+          copyStatus.textContent = 'Можно выделить и скопировать текст вручную.';
+        }
+      });
+    }
 
     form.addEventListener('submit', event => {
       event.preventDefault();
@@ -791,7 +878,12 @@
         const value = control.value.trim();
         if (value) pairs.push([preset.fields[index].label, value]);
       }
+      const preference = visit?.value();
+      if (preference) pairs.push(['Когда удобно', preference]);
       pairs.push(['Телефон', '+7 ' + phone.value]);
+      if (photos.length) pairs.push(['Фото', String(photos.length)]);
+      receiptText = ['Заявка · ' + preset.name, ...pairs.map(([label,value]) => label + ': ' + value)].join('\n');
+      copyStatus.textContent = '';
       const message = get('app-message');
       message.replaceChildren();
       for (const [label, value] of pairs) {
@@ -799,11 +891,39 @@
         row.append(element('dt', label), element('dd', value));
         message.append(row);
       }
-      if (photoUrl) receiptPhoto.src = photoUrl;
-      receiptPhoto.hidden = !photoUrl;
+      receiptPhotos.replaceChildren(...photos.map((photo,index) => photoTile(photo,index,false)));
+      receiptPhotos.hidden = !photos.length;
       receiptReady = true;
       showStep(2);
     });
+  }
+
+
+  function addVisitPreference(form) {
+    const group = document.createElement('div');
+    group.className = 'clean-preference';
+    group.innerHTML = '<label class="applabel">Удобный день <input type="date"></label>' +
+      '<label class="applabel">Удобное время <select><option value="">Любое</option><option>Утро, 9:00–12:00</option>' +
+      '<option>День, 12:00–16:00</option><option>Вечер, 16:00–20:00</option></select></label>';
+    form.querySelector('.appfields').after(group);
+    const date = group.querySelector('input');
+    const time = group.querySelector('select');
+    function localDateString(day) {
+      return [day.getFullYear(), String(day.getMonth()+1).padStart(2,'0'), String(day.getDate()).padStart(2,'0')].join('-');
+    }
+    date.min = localDateString(new Date());
+    const formatter = new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long'});
+    return {
+      fillExample() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        date.value = localDateString(tomorrow);
+        time.selectedIndex = 2;
+      },
+      value() {
+        return [date.value ? formatter.format(new Date(date.value+'T12:00:00')) : '', time.value].filter(Boolean).join(' · ');
+      }
+    };
   }
 
   function furniturePhoto(id, width) {
@@ -837,7 +957,7 @@
     draft.className = 'clean-order';
     draft.setAttribute('aria-label', 'Состав заявки');
     draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total" aria-live="polite"></strong>';
-    get('app-form').prepend(draft);
+    get('app-details').append(draft);
     const draftItems = draft.querySelector('ul');
     const draftTotal = draft.querySelector('strong');
 
