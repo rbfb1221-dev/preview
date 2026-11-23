@@ -839,6 +839,7 @@
     const description = item => item.title + ' · ' + item.size + ' × ' + item.quantity + (item.heavy ? ' · сильные загрязнения' : '');
     function updateCart() {
       checkout.disabled = !cart.length;
+      notice.textContent = cart.length ? 'Позиций в заявке: ' + cart.length + '.' : '';
       checkout.firstChild.textContent = cart.length ? 'К заявке · ' + money.format(total()) + ' ' : 'Перейти к заявке ';
       draftTotal.textContent = 'Предварительно ' + money.format(total());
       draftItems.replaceChildren();
@@ -862,11 +863,9 @@
     }
 
     get('clean-add').addEventListener('click', () => {
-      const item = selected();
-      cart.push(item);
+      cart.push(selected());
       updateCart();
       actions.changed(true);
-      notice.textContent = 'Добавлено: ' + item.title.toLowerCase() + '. Позиций в заявке: ' + cart.length + '.';
     });
     checkout.addEventListener('click', actions.checkout);
 
