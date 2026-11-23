@@ -57,67 +57,110 @@
     }
     @media (max-width: 390px) { #fields { grid-template-columns: 1fr; } }
 
-    .tailored { font-family: "Segoe UI", Arial, sans-serif; background: var(--paper); color: #242a2b; }
-    .tailored .wrap { width: min(1260px, calc(100% - 72px)); }
-    .tailored header, .service-hero { background: var(--night); color: #faf2e6; }
-    .tailored header { border-bottom: 0; }
-    .tailored header .wrap { min-height: 78px; }
-    .tailored header strong { font-weight: 750; letter-spacing: -.025em; font-size: 1.13rem; }
-    .service-hero { padding: 15px 0 clamp(25px, 4vw, 52px); }
-    .hero-inner { display: grid; grid-template-columns: .93fr 1.07fr; align-items: stretch; min-height: clamp(400px, 41vw, 565px); border-top: 1px solid #ffffff38; }
-    .hero-copy { padding: clamp(30px, 6vw, 82px) clamp(18px, 4.5vw, 64px) clamp(26px, 5vw, 70px) 0; align-self: center; }
-    .hero-label { color: var(--accent); font-size: .9rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 19px; }
-    .hero-copy h1 { max-width: none; font-size: clamp(3rem, 6vw, 6.1rem); line-height: .97; letter-spacing: -.075em; font-weight: 740; }
-    .hero-copy h1 span { display: block; color: var(--accent); }
-    .hero-copy .lede { margin: 22px 0; max-width: 33ch; color: #f3e9dd; font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.55; }
-    .hero-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 10px 19px; border-radius: 8px; background: var(--accent); color: #21251f; text-decoration: none; font-weight: 740; }
-    .hero-photo { position: relative; margin: 0; overflow: hidden; border-radius: 0 0 17px 17px; background: var(--wash); }
-    .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--position, center); }
-    .tailored main { padding-block: clamp(34px, 6vw, 72px); }
-    .tailored .layout { grid-template-columns: 1.13fr .87fr; gap: clamp(16px, 3vw, 30px); }
-    .tailored .intro { grid-column: 1 / -1; }
-    .tailored .intro h1, .tailored .intro h2 { max-width: none; font-size: clamp(2.2rem, 4.9vw, 4.8rem); line-height: .99; letter-spacing: -.067em; }
-    .tailored .intro p { margin-top: 12px; max-width: 56ch; }
-    .tailored .card { grid-area: 2 / 1; padding: clamp(18px, 3.3vw, 42px); background: #fffdf9; border-color: var(--line); border-radius: 20px; }
-    .tailored .preview { grid-area: 2 / 2; margin: 0; padding: clamp(18px, 3.3vw, 32px); border-radius: 20px; }
-    .tailored input, .tailored select, .tailored .secondary { min-height: 47px; border-color: var(--line); }
-    .tailored button { min-height: 48px; border-radius: 8px; }
-    @media (max-width: 760px) {
-      .tailored .wrap { width: calc(100% - 36px); }
-      .tailored header .wrap { min-height: 63px; }
-      .hero-inner { grid-template-columns: 1fr; min-height: 0; }
-      .hero-copy { padding: 25px 0 20px; }
-      .hero-copy h1 { font-size: clamp(2.65rem, 10vw, 4.7rem); }
-      .hero-label { margin-bottom: 12px; }
-      .hero-copy .lede { margin-block: 16px; }
-      .hero-photo { min-height: clamp(170px, 53vw, 320px); border-radius: 10px; }
-      .tailored .layout { grid-template-columns: 1fr; }
-      .tailored .card { grid-area: 2 / 1; }
-      .tailored .preview { grid-area: 3 / 1; }
+
+    .service-app {
+      --background: #f4f6f5; --surface: #fff; --ink: #172624; --muted: #425653; --line: #c7d2ce;
+      --accent: #14644e; --tint: #e7f3ed; --hero: #142d27; --on-hero: #fff;
+      background: var(--background); color: var(--ink); min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.45;
     }
+    .service-app :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .service-app .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .appwrap { width: min(1120px, calc(100% - 44px)); margin-inline: auto; }
+    .apptop { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .appbar { min-height: 65px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .appbrand { display: flex; align-items: center; gap: 10px; font-size: .95rem; }
+    .appmark { width: 26px; height: 26px; border-radius: 8px; flex: 0 0 26px; background: var(--accent); position: relative; }
+    .appmark::before { content: ""; position: absolute; inset: 7px; border: 2px solid #fff; border-radius: 3px; }
+    .appdemo { color: var(--muted); font-size: .82rem; font-weight: 670; }
+    .appnav { display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+    .appnav button { background: transparent; color: var(--ink); border: 0; border-radius: 8px; padding: 7px 16px; min-height: 36px; box-shadow: none; }
+    .appnav button[aria-current] { background: var(--tint); color: var(--accent); }
+    .appnav button:disabled { color: #566861; cursor: default; }
+    .appmain { padding-block: 22px 48px; }
+    .apphero { position: relative; isolation: isolate; overflow: hidden; background: var(--hero); color: var(--on-hero); border-radius: 22px; min-height: 272px; display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .apphero img { width: 100%; height: 100%; min-height: 0; position: absolute; inset: 0 0 0 auto; width: 58%; z-index: -2; object-fit: cover; object-position: var(--photo-position); }
+    .apphero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--hero) 38%, transparent 76%); }
+    .herocopy { padding: clamp(22px,5vw,48px); align-self: center; }
+    .apphero h1 { max-width: 13ch; font-size: clamp(2.15rem,4.7vw,4.35rem); letter-spacing: -.067em; line-height: .99; color: var(--on-hero); }
+    .apphero p { margin-top: 14px; color: #f1f6f4; max-width: 39ch; font-size: .98rem; }
+    .appgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); align-items: start; gap: 16px; }
+    .apphero + .appgrid { margin-top: 16px; }
+    .appcard, .appsummary { background: var(--surface); border: 1px solid var(--line); border-radius: 17px; padding: clamp(16px,3vw,25px); min-width: 0; }
+    .appcard h2, .appsummary h2 { color: var(--ink); margin-bottom: 15px; font-weight: 720; font-size: 1.55rem; letter-spacing: -.04em; line-height: 1.12; }
+    .appsummary h2 { font-size: 1.15rem; }
+    .appsummary p { color: var(--muted); margin-top: 8px; font-size: .92rem; }
+    .appsummary .app-selection { font-weight: 700; color: var(--ink); }
+    .appsummary .appprivacy { padding-top: 10px; border-top: 1px solid var(--line); font-size: .82rem; }
+    .appcard fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .appchoices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .appchoice { display: grid; grid-template-columns: 20px minmax(0,1fr); align-items: start; gap: 10px; cursor: pointer; padding: 12px; min-height: 72px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); }
+    .appchoice input { width: 17px; height: 17px; min-height: 0; margin: 3px 0 0; accent-color: var(--accent); }
+    .appchoice strong, .appchoice small { display: block; }
+    .appchoice small { color: var(--muted); margin-top: 2px; font-size: .82rem; font-weight: 450; }
+    .appchoice:hover, .appchoice:has(input:checked) { background: var(--tint); border-color: var(--accent); }
+    .appfields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .applabel { display: grid; gap: 6px; margin: 0; color: var(--ink); }
+    .applabel.wide { grid-column: 1 / -1; }
+    .appfields input, .appfields select, .apptelephone input { color: var(--ink); background: var(--surface); min-height: 46px; }
+    .appfields input::placeholder, .apptelephone input::placeholder { color: #576760; opacity: 1; }
+    .appupload { margin-block: 14px; }
+    .appupload label { display: block; cursor: pointer; padding: 11px 13px; border: 1px dashed var(--accent); border-radius: 10px; background: var(--tint); color: var(--ink); }
+    .appupload label small { display: block; color: var(--muted); font-weight: 450; overflow-wrap: anywhere; }
+    .appupload:has(input:focus-visible) label { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .appattachment { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .appattachment img { display: block; width: 72px; height: 52px; border-radius: 7px; object-fit: cover; }
+    .apperror { color: #a12427; margin-top: 6px; font-size: .9rem; }
+    .apptelephone { display: flex; align-items: center; margin-top: 6px; width: min(100%, 340px); border: 1px solid #a8b8b3; border-radius: 9px; background: var(--surface); }
+    .apptelephone:focus-within { outline: 3px solid var(--accent); outline-offset: 1px; }
+    .apptelephone span { padding-left: 13px; color: #576760; }
+    .apptelephone.has-number span { color: var(--ink); }
+    .apptelephone input { padding-inline: 5px 12px; border: 0; outline: 0; }
+    .apptelephone input:focus-visible { outline: none; }
+    .appactions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 17px; }
+    .appprimary, .appsecondary { min-height: 45px; border-radius: 9px; }
+    .appprimary { background: var(--accent); color: #fff; }
+    .appsecondary { background: var(--surface); border: 1px solid var(--line); color: var(--ink); }
+    .applink { background: transparent; color: var(--accent); padding: 4px; text-decoration: underline; }
+    .app-message { border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
+    .app-message-header { display: flex; justify-content: space-between; gap: 8px; color: var(--ink); background: var(--tint); padding: 11px 14px; }
+    .app-message-header span { color: var(--accent); font-size: .87rem; font-weight: 650; }
+    .app-message dl { margin: 0; padding-inline: 14px; }
+    .app-message dl div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.12fr); gap: 10px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+    .app-message dl div:last-child { border: 0; }
+    .app-message dt { color: var(--muted); }
+    .app-message dd { margin: 0; font-weight: 650; color: var(--ink); overflow-wrap: anywhere; }
+    .app-message img { display: block; margin: 8px 14px 14px; width: min(260px,calc(100% - 28px)); max-height: 180px; object-fit: cover; border-radius: 8px; }
+    @media (max-width: 740px) {
+      .appwrap { width: calc(100% - 28px); }
+      .appbar { min-height: 54px; }
+      .appmain { padding-block: 12px calc(77px + env(safe-area-inset-bottom)); }
+      .appnav { position: fixed; z-index: 5; left: 10px; right: 10px; bottom: calc(8px + env(safe-area-inset-bottom)); background: var(--surface); box-shadow: 0 4px 23px #1b362926; }
+      .appnav button { flex: 1; padding-inline: 6px; min-height: 41px; }
+      .apphero { min-height: 0; grid-template-columns: 1fr; border-radius: 15px; }
+      .apphero img { width: 100%; opacity: .29; }
+      .apphero::before { background: linear-gradient(90deg,var(--hero),transparent); }
+      .herocopy { padding: 20px; }
+      .apphero h1 { font-size: clamp(2rem,8vw,3.3rem); }
+      .apphero p { margin-top: 10px; font-size: .9rem; }
+      .appgrid { grid-template-columns: 1fr; gap: 10px; }
+      .apphero + .appgrid { margin-top: 10px; }
+      .appchoices { gap: 7px; }
+      .appchoice { gap: 6px; padding: 8px; min-height: 74px; }
+    }
+    @media (max-width: 380px) { .appfields { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <header><div class="wrap"><strong id="brand">Демо заявок</strong><a id="all" href="./" hidden>Все демо</a></div></header>
-  <section class="service-hero" id="service-hero" aria-labelledby="hero-title" hidden>
-    <div class="hero-inner wrap">
-      <div class="hero-copy">
-        <p class="hero-label" id="hero-label"></p>
-        <h1 id="hero-title"><span id="hero-title-accent"></span></h1>
-        <p class="lede" id="hero-description"></p>
-        <a class="hero-cta" href="#quote">Узнать стоимость</a>
-      </div>
-      <figure class="hero-photo"><img id="hero-image" width="1200" height="800" fetchpriority="high" alt=""></figure>
-    </div>
-  </section>
-  <main class="wrap" id="quote">
+  <main class="wrap">
     <section id="directory-page" hidden>
       <h1>Демо для выездных услуг</h1>
       <div class="directory" id="directory"></div>
     </section>
     <div class="layout" id="service" hidden>
       <section class="intro">
-        <h1 id="title"></h1><h2 id="quote-title" hidden></h2>
+        <h1 id="title"></h1>
         <p id="description"></p>
       </section>
       <section class="card" aria-labelledby="form-title">
@@ -140,155 +183,84 @@
     </div>
     <noscript>Включите JavaScript, чтобы открыть демо.</noscript>
   </main>
+
+  <template id="service-app">
+    <div class="apptop">
+      <header class="appbar appwrap">
+        <strong class="appbrand"><span class="appmark" aria-hidden="true"></span><span id="app-brand"></span></strong>
+        <nav class="appnav" aria-label="Шаги заявки">
+          <button type="button" data-step="0" aria-current="step">Услуга</button>
+          <button type="button" data-step="1" disabled>Детали</button>
+          <button type="button" data-step="2" disabled>Заявка</button>
+        </nav>
+        <span class="appdemo">Демо</span>
+      </header>
+    </div>
+    <main class="appwrap appmain">
+      <section class="apphero" id="app-hero" aria-labelledby="app-title">
+        <div class="herocopy"><h1 id="app-title"></h1><p id="app-lede"></p></div>
+        <img id="app-photo" width="1280" height="853" fetchpriority="high" alt="">
+      </section>
+      <div class="appgrid">
+        <section class="appcard" id="app-service" aria-labelledby="service-title">
+          <h2 id="service-title" tabindex="-1">Выберите услугу</h2>
+          <fieldset>
+            <legend class="sr">Вид мебели</legend>
+            <div class="appchoices" id="app-choices"></div>
+          </fieldset>
+          <div class="appactions">
+            <button type="button" class="appprimary" id="app-next">Далее</button>
+          </div>
+        </section>
+        <section class="appcard" id="app-details" aria-labelledby="details-title" hidden>
+          <h2 id="details-title" tabindex="-1">Детали заявки</h2>
+          <form id="app-form">
+            <div class="appfields" id="app-fields"></div>
+            <div class="appupload">
+              <label for="app-file"><strong>Приложить фото</strong><small id="app-file-label">JPG, PNG или WebP · до 4 МБ · по желанию</small></label>
+              <input id="app-file" class="sr" type="file" accept="image/jpeg,image/png,image/webp">
+              <div class="appattachment" id="app-attachment" hidden><img id="app-thumb" alt="Прикреплённое фото"><button type="button" class="applink" id="app-file-remove">Удалить фото</button></div>
+              <p class="apperror" id="app-file-error" role="status" hidden></p>
+            </div>
+            <label class="applabel" for="app-tel">Телефон для связи</label>
+            <div class="apptelephone" id="app-telephone">
+              <span aria-hidden="true">+7</span>
+              <input id="app-tel" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="900 000-00-00" aria-describedby="app-phone-hint" required>
+            </div>
+            <p class="sr" id="app-phone-hint">Введите 10 цифр после +7.</p>
+            <div class="appactions">
+              <button type="submit" class="appprimary">Показать заявку</button>
+              <button type="button" class="appsecondary" id="app-example">Подставить пример</button>
+            </div>
+          </form>
+        </section>
+        <section class="appcard" id="app-receipt" aria-labelledby="receipt-title" hidden>
+          <h2 id="receipt-title" tabindex="-1">Как заявку увидит мастер</h2>
+          <div class="app-message">
+            <div class="app-message-header"><strong>Новая заявка</strong><span>Telegram</span></div>
+            <dl id="app-message"></dl>
+            <img id="app-receipt-photo" alt="Фото к заявке" hidden>
+          </div>
+          <div class="appactions">
+            <button type="button" class="appsecondary" id="app-edit">Изменить заявку</button>
+          </div>
+        </section>
+        <aside class="appsummary" aria-labelledby="app-summary-title">
+          <h2 id="app-summary-title">Ваша заявка</h2>
+          <p class="app-selection" id="app-selection" aria-live="polite"></p>
+          <p id="app-price-note"></p>
+          <p class="appprivacy">В демо данные остаются в браузере.</p>
+        </aside>
+      </div>
+    </main>
+  </template>
   <script>
 
-const windowPages = {"upholstery":{"html":"  \u003cheader class=\"top\">\n    \u003cdiv class=\"header wrap\">\n      \u003ca class=\"brand\" href=\"#main-title\" aria-label=\"Перетяжка мебели\">\u003cspan class=\"mark\" aria-hidden=\"true\">\u003c/span>\u003cspan>Перетяжка\u003cbr>мебели\u003c/span>\u003c/a>\n      \u003cnav aria-label=\"Разделы сайта\">\u003ca href=\"#calculate\">Расчёт\u003c/a>\u003ca href=\"#services\">Услуги\u003c/a>\u003ca href=\"#questions\">Вопросы\u003c/a>\u003c/nav>\n      \u003ca class=\"button accent header-cta\" href=\"#calculate\">Узнать стоимость\u003c/a>\n    \u003c/div>\n  \u003c/header>\n\n  \u003cmain>\n    \u003cdiv id=\"site-content\">\n      \u003csection class=\"hero\" aria-labelledby=\"main-title\">\n        \u003cdiv class=\"hero-inner wrap\">\n          \u003cdiv class=\"hero-copy\">\n            \u003cp class=\"eyebrow\">\u003cspan class=\"pin\" aria-hidden=\"true\">\u003c/span> Перетяжка мебели\u003c/p>\n            \u003ch1 id=\"main-title\">Обновите\u003cbr>любимый диван\u003cspan>.\u003c/span>\u003c/h1>\n            \u003cp class=\"lede\">Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.\u003c/p>\n            \u003ca class=\"button accent\" href=\"#calculate\">Узнать стоимость\u003c/a>\n          \u003c/div>\n          \u003cfigure class=\"hero-photo\">\n            \u003cimg src=\"https://images.pexels.com/photos/4846097/pexels-photo-4846097.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1280\" width=\"1280\" height=\"853\" fetchpriority=\"high\" alt=\"Мягкий диван с декоративными подушками\">\n          \u003c/figure>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection class=\"services-section\" id=\"services\" aria-labelledby=\"services-title\">\n        \u003cdiv class=\"wrap\">\n          \u003cdiv class=\"section-head\">\u003ch2 id=\"services-title\">Что перетягиваем\u003c/h2>\u003cp>Нажмите на карточку, чтобы подставить вариант в форму.\u003c/p>\u003c/div>\n          \u003cdiv class=\"services\">\u003ca class=\"service\" href=\"#calculate\" data-service=\"0\">\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003ch3>Угловой диван\u003c/h3>\u003cp>Обивка углового дивана\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003ch3>Прямой диван\u003c/h3>\u003cp>Сиденья, спинка и подлокотники\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003ch3>Кресло\u003c/h3>\u003cp>Обновление обивки кресла\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003ch3>Стулья и другое\u003c/h3>\u003cp>Сиденья, спинки и другие предметы\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003c/div>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection id=\"calculate\" class=\"section wrap calculator\" aria-labelledby=\"calculator-title\">\n        \u003cdiv class=\"section-head\">\n          \u003cdiv>\u003cp class=\"eyebrow\">Оценка стоимости\u003c/p>\u003ch2 id=\"calculator-title\">Что обновляем?\u003c/h2>\u003c/div>\n          \u003cp>Опишите мебель и приложите фото. Мастер оценит работу и подскажет, какие детали нужно уточнить.\u003c/p>\n        \u003c/div>\n        \u003cform class=\"form-card\" id=\"lead-form\">\n          \u003cdiv class=\"form-inputs form-options\">\n            \u003cfieldset id=\"service\">\n              \u003clegend>Выберите вариант\u003c/legend>\n              \u003cdiv class=\"options\">\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"0\" checked>\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Угловой диван\u003c/strong>\u003csmall>Обивка углового дивана\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Прямой диван\u003c/strong>\u003csmall>Сиденья, спинка и подлокотники\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Кресло\u003c/strong>\u003csmall>Обновление обивки кресла\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Стулья и другое\u003c/strong>\u003csmall>Сиденья, спинки и другие предметы\u003c/small>\u003c/span>\u003c/label>\u003c/div>\n            \u003c/fieldset>\n            \u003cdiv class=\"details-grid\">\u003clabel class=\"field\">Примерные размеры\u003cinput name=\"detail0\" maxlength=\"150\" placeholder=\"Можно написать «не знаю»\">\u003c/label>\u003clabel class=\"field\">Что нужно заменить\u003cinput name=\"detail1\" maxlength=\"150\" placeholder=\"Обивка, наполнитель или ремонт\">\u003c/label>\u003clabel class=\"field\">Ткань или цвет (по желанию)\u003cinput name=\"detail2\" maxlength=\"150\" placeholder=\"Если уже выбрали\">\u003c/label>\u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"summary\">\n            \u003cdiv class=\"diagram\">\u003cdiv class=\"diagram-grid\" aria-hidden=\"true\">\u003cimg src=\"https://images.pexels.com/photos/4846097/pexels-photo-4846097.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=480\" width=\"480\" height=\"320\" alt=\"\" loading=\"lazy\">\u003c/div>\u003cp id=\"diagram-label\">Угловой диван\u003c/p>\u003c/div>\u003cdiv class=\"price\">\n              \u003ch3>Предварительная оценка\u003c/h3>\n              \u003cp class=\"sum-price\" id=\"estimate\" aria-live=\"polite\">По фото\u003c/p>\n              \u003cp class=\"sum-details\">Цена зависит от размеров, ткани и объёма работ.\u003c/p>\n            \u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"form-inputs form-contact\">\n            \u003ch3>Как с вами связаться\u003c/h3>\n            \u003clabel class=\"field\">Телефон\n              \u003cinput name=\"phone\" id=\"phone\" type=\"tel\" autocomplete=\"tel\" inputmode=\"tel\" value=\"+7\" placeholder=\"+7 900 000-00-00\" required>\n            \u003c/label>\n            \u003cbutton type=\"button\" id=\"fill-demo\" class=\"text-button demo-only\">Подставить пример\u003c/button>\n            \n          \u003c/div>\n\n          \u003cdiv class=\"form-actions\">\n            \u003cdiv class=\"photo-feature\">\n              \u003clabel class=\"attach\" for=\"photo\">\u003cspan class=\"attach-icon\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Приложить фото\u003c/strong>\u003csmall id=\"photo-label\">JPG, PNG или WebP до 4 МБ\u003c/small>\u003c/span>\u003c/label>\n              \u003cinput class=\"visually-hidden\" id=\"photo\" name=\"photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\">\n              \u003cdiv id=\"photo-box\" class=\"photo-box\" hidden>\u003cimg id=\"photo-preview\" alt=\"Прикреплённое фото\">\u003cbutton id=\"remove-photo\" type=\"button\" class=\"text-button\">Удалить фото\u003c/button>\u003c/div>\n            \u003c/div>\n            \u003cp class=\"demo-note demo-only\">Демо. Данные остаются в браузере.\u003c/p>\n            \u003cbutton type=\"submit\" class=\"button dark\" id=\"submit\" disabled>Показать пример заявки\u003c/button>\n            \u003cp class=\"form-feedback\" id=\"feedback\" role=\"status\" hidden>\u003c/p>\n            \u003cnoscript>\u003cp class=\"form-help\">Для расчёта и отправки заявки включите JavaScript.\u003c/p>\u003c/noscript>\n          \u003c/div>\n        \u003c/form>\n\n        \u003csection class=\"demo-panel demo-only\" id=\"message-preview\" aria-labelledby=\"demo-title\" hidden>\n          \u003ch2 id=\"demo-title\">Пример заявки в Telegram\u003c/h2>\n          \u003cp>Так будет выглядеть сообщение мастеру.\u003c/p>\n          \u003cdiv class=\"notification\">\u003cpre id=\"message-text\">\u003c/pre>\u003cimg id=\"message-photo\" alt=\"Фото в тестовой заявке\" hidden>\u003c/div>\n        \u003c/section>\n      \u003c/section>\n\n      \u003csection id=\"questions\" class=\"section wrap questions\" aria-labelledby=\"questions-title\">\n        \u003ch2 id=\"questions-title\">Частые вопросы\u003c/h2>\n        \u003cdiv>\n          \u003cdetails>\u003csummary>От чего зависит окончательная цена?\u003c/summary>\u003cp>От размеров, ткани и объёма работ.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Что происходит после заявки?\u003c/summary>\u003cp>В рабочей версии мастер получит заявку в Telegram и сможет связаться с вами.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Обязательно прикладывать фото?\u003c/summary>\u003cp>Фото помогает оценить работу. В демо его можно пропустить.\u003c/p>\u003c/details>\n        \u003c/div>\n      \u003c/section>\n    \u003c/div>\n\n\u003c/main>\u003cfooter class=\"footer\">\u003cdiv class=\"wrap\">\u003cspan>Перетяжка мебели\u003c/span>\u003cspan class=\"demo-only\">Демонстрационная версия\u003c/span>\u003c/div>\u003c/footer>","name":"Перетяжка мебели","options":["Угловой диван","Прямой диван","Кресло","Стулья и другое"],"fields":[{"label":"Примерные размеры","example":"240 × 160 см"},{"label":"Что нужно заменить","example":"Обивку, каркас цел"},{"label":"Ткань или цвет","example":"Серо-зелёный велюр"}],"theme":{"night":"#3e2d2b","accent":"#ffc19f","paper":"#f7f0e9","line":"#dfd2c8","active":"#964626","position":"center 55%"}},"removal":{"html":"  \u003cheader class=\"top\">\n    \u003cdiv class=\"header wrap\">\n      \u003ca class=\"brand\" href=\"#main-title\" aria-label=\"Вывоз вещей и мебели\">\u003cspan class=\"mark\" aria-hidden=\"true\">\u003c/span>\u003cspan>Вывоз\u003cbr>мебели\u003c/span>\u003c/a>\n      \u003cnav aria-label=\"Разделы сайта\">\u003ca href=\"#calculate\">Расчёт\u003c/a>\u003ca href=\"#services\">Услуги\u003c/a>\u003ca href=\"#questions\">Вопросы\u003c/a>\u003c/nav>\n      \u003ca class=\"button accent header-cta\" href=\"#calculate\">Узнать стоимость\u003c/a>\n    \u003c/div>\n  \u003c/header>\n\n  \u003cmain>\n    \u003cdiv id=\"site-content\">\n      \u003csection class=\"hero\" aria-labelledby=\"main-title\">\n        \u003cdiv class=\"hero-inner wrap\">\n          \u003cdiv class=\"hero-copy\">\n            \u003cp class=\"eyebrow\">\u003cspan class=\"pin\" aria-hidden=\"true\">\u003c/span> Вывоз мебели\u003c/p>\n            \u003ch1 id=\"main-title\">Старую мебель\u003cbr>пора вывезти\u003cspan>.\u003c/span>\u003c/h1>\n            \u003cp class=\"lede\">Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.\u003c/p>\n            \u003ca class=\"button accent\" href=\"#calculate\">Узнать стоимость\u003c/a>\n          \u003c/div>\n          \u003cfigure class=\"hero-photo\">\n            \u003cimg src=\"https://images.pexels.com/photos/4246098/pexels-photo-4246098.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1280\" width=\"1280\" height=\"853\" fetchpriority=\"high\" alt=\"Диван и коробки с вещами в комнате\">\n          \u003c/figure>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection class=\"services-section\" id=\"services\" aria-labelledby=\"services-title\">\n        \u003cdiv class=\"wrap\">\n          \u003cdiv class=\"section-head\">\u003ch2 id=\"services-title\">Что вывозим\u003c/h2>\u003cp>Нажмите на карточку, чтобы подставить вариант в форму.\u003c/p>\u003c/div>\n          \u003cdiv class=\"services\">\u003ca class=\"service\" href=\"#calculate\" data-service=\"0\">\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003ch3>Диваны и кресла\u003c/h3>\u003cp>Мягкая мебель и матрасы\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003ch3>Шкафы\u003c/h3>\u003cp>Шкафы и стеллажи\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003ch3>Столы и стулья\u003c/h3>\u003cp>Столы, стулья и комоды\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003ch3>Несколько вещей\u003c/h3>\u003cp>Уточните список в заявке\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003c/div>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection id=\"calculate\" class=\"section wrap calculator\" aria-labelledby=\"calculator-title\">\n        \u003cdiv class=\"section-head\">\n          \u003cdiv>\u003cp class=\"eyebrow\">Оценка стоимости\u003c/p>\u003ch2 id=\"calculator-title\">Что нужно вывезти?\u003c/h2>\u003c/div>\n          \u003cp>Укажите, что нужно вывезти. По фото, этажу и наличию лифта исполнитель сможет оценить стоимость.\u003c/p>\n        \u003c/div>\n        \u003cform class=\"form-card\" id=\"lead-form\">\n          \u003cdiv class=\"form-inputs form-options\">\n            \u003cfieldset id=\"service\">\n              \u003clegend>Выберите вариант\u003c/legend>\n              \u003cdiv class=\"options\">\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"0\" checked>\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Диваны и кресла\u003c/strong>\u003csmall>Мягкая мебель и матрасы\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Шкафы\u003c/strong>\u003csmall>Шкафы и стеллажи\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Столы и стулья\u003c/strong>\u003csmall>Столы, стулья и комоды\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Несколько вещей\u003c/strong>\u003csmall>Уточните список в заявке\u003c/small>\u003c/span>\u003c/label>\u003c/div>\n            \u003c/fieldset>\n            \u003cdiv class=\"details-grid\">\u003clabel class=\"field\">Что вывезти\u003cinput name=\"detail0\" maxlength=\"150\" placeholder=\"Например, диван и кресло\">\u003c/label>\u003clabel class=\"field\">Адрес или район\u003cinput name=\"detail1\" maxlength=\"150\" placeholder=\"Район или улица\">\u003c/label>\u003clabel class=\"field\">Этаж\u003cinput name=\"detail2\" maxlength=\"150\" placeholder=\"Например, 5\">\u003c/label>\u003clabel class=\"field\">Лифт\u003cselect name=\"detail3\">\u003coption value=\"\">Выберите вариант\u003c/option>\u003coption>Нет лифта\u003c/option>\u003coption>Пассажирский\u003c/option>\u003coption>Грузовой\u003c/option>\u003c/select>\u003c/label>\u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"summary\">\n            \u003cdiv class=\"diagram\">\u003cdiv class=\"diagram-grid\" aria-hidden=\"true\">\u003cimg src=\"https://images.pexels.com/photos/4246098/pexels-photo-4246098.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=480\" width=\"480\" height=\"320\" alt=\"\" loading=\"lazy\">\u003c/div>\u003cp id=\"diagram-label\">Диваны и кресла\u003c/p>\u003c/div>\u003cdiv class=\"price\">\n              \u003ch3>Предварительная оценка\u003c/h3>\n              \u003cp class=\"sum-price\" id=\"estimate\" aria-live=\"polite\">По фото\u003c/p>\n              \u003cp class=\"sum-details\">Цена зависит от объёма мебели, этажа и наличия лифта.\u003c/p>\n            \u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"form-inputs form-contact\">\n            \u003ch3>Как с вами связаться\u003c/h3>\n            \u003clabel class=\"field\">Телефон\n              \u003cinput name=\"phone\" id=\"phone\" type=\"tel\" autocomplete=\"tel\" inputmode=\"tel\" value=\"+7\" placeholder=\"+7 900 000-00-00\" required>\n            \u003c/label>\n            \u003cbutton type=\"button\" id=\"fill-demo\" class=\"text-button demo-only\">Подставить пример\u003c/button>\n            \n          \u003c/div>\n\n          \u003cdiv class=\"form-actions\">\n            \u003cdiv class=\"photo-feature\">\n              \u003clabel class=\"attach\" for=\"photo\">\u003cspan class=\"attach-icon\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Приложить фото\u003c/strong>\u003csmall id=\"photo-label\">JPG, PNG или WebP до 4 МБ\u003c/small>\u003c/span>\u003c/label>\n              \u003cinput class=\"visually-hidden\" id=\"photo\" name=\"photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\">\n              \u003cdiv id=\"photo-box\" class=\"photo-box\" hidden>\u003cimg id=\"photo-preview\" alt=\"Прикреплённое фото\">\u003cbutton id=\"remove-photo\" type=\"button\" class=\"text-button\">Удалить фото\u003c/button>\u003c/div>\n            \u003c/div>\n            \u003cp class=\"demo-note demo-only\">Демо. Данные остаются в браузере.\u003c/p>\n            \u003cbutton type=\"submit\" class=\"button dark\" id=\"submit\" disabled>Показать пример заявки\u003c/button>\n            \u003cp class=\"form-feedback\" id=\"feedback\" role=\"status\" hidden>\u003c/p>\n            \u003cnoscript>\u003cp class=\"form-help\">Для расчёта и отправки заявки включите JavaScript.\u003c/p>\u003c/noscript>\n          \u003c/div>\n        \u003c/form>\n\n        \u003csection class=\"demo-panel demo-only\" id=\"message-preview\" aria-labelledby=\"demo-title\" hidden>\n          \u003ch2 id=\"demo-title\">Пример заявки в Telegram\u003c/h2>\n          \u003cp>Так будет выглядеть сообщение мастеру.\u003c/p>\n          \u003cdiv class=\"notification\">\u003cpre id=\"message-text\">\u003c/pre>\u003cimg id=\"message-photo\" alt=\"Фото в тестовой заявке\" hidden>\u003c/div>\n        \u003c/section>\n      \u003c/section>\n\n      \u003csection id=\"questions\" class=\"section wrap questions\" aria-labelledby=\"questions-title\">\n        \u003ch2 id=\"questions-title\">Частые вопросы\u003c/h2>\n        \u003cdiv>\n          \u003cdetails>\u003csummary>От чего зависит окончательная цена?\u003c/summary>\u003cp>От объёма мебели, этажа и наличия лифта.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Что происходит после заявки?\u003c/summary>\u003cp>В рабочей версии мастер получит заявку в Telegram и сможет связаться с вами.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Обязательно прикладывать фото?\u003c/summary>\u003cp>Фото помогает оценить работу. В демо его можно пропустить.\u003c/p>\u003c/details>\n        \u003c/div>\n      \u003c/section>\n    \u003c/div>\n\n\u003c/main>\u003cfooter class=\"footer\">\u003cdiv class=\"wrap\">\u003cspan>Вывоз вещей и мебели\u003c/span>\u003cspan class=\"demo-only\">Демонстрационная версия\u003c/span>\u003c/div>\u003c/footer>","name":"Вывоз вещей и мебели","options":["Диваны и кресла","Шкафы","Столы и стулья","Несколько вещей"],"fields":[{"label":"Что вывезти","example":"Диван и кресло"},{"label":"Адрес или район","example":"Советский район"},{"label":"Этаж","example":"5"},{"label":"Лифт","example":"Нет лифта"}],"theme":{"night":"#25352c","accent":"#d6e49e","paper":"#f3f2e8","line":"#d7dbcb","active":"#396246","position":"center 50%"}},"cleaning":{"html":"  \u003cheader class=\"top\">\n    \u003cdiv class=\"header wrap\">\n      \u003ca class=\"brand\" href=\"#main-title\" aria-label=\"Химчистка мебели\">\u003cspan class=\"mark\" aria-hidden=\"true\">\u003c/span>\u003cspan>Химчистка\u003cbr>мебели\u003c/span>\u003c/a>\n      \u003cnav aria-label=\"Разделы сайта\">\u003ca href=\"#calculate\">Расчёт\u003c/a>\u003ca href=\"#services\">Услуги\u003c/a>\u003ca href=\"#questions\">Вопросы\u003c/a>\u003c/nav>\n      \u003ca class=\"button accent header-cta\" href=\"#calculate\">Узнать стоимость\u003c/a>\n    \u003c/div>\n  \u003c/header>\n\n  \u003cmain>\n    \u003cdiv id=\"site-content\">\n      \u003csection class=\"hero\" aria-labelledby=\"main-title\">\n        \u003cdiv class=\"hero-inner wrap\">\n          \u003cdiv class=\"hero-copy\">\n            \u003cp class=\"eyebrow\">\u003cspan class=\"pin\" aria-hidden=\"true\">\u003c/span> Выездная химчистка\u003c/p>\n            \u003ch1 id=\"main-title\">Диван снова\u003cbr>будет чистым\u003cspan>.\u003c/span>\u003c/h1>\n            \u003cp class=\"lede\">Покажите диван и пятна на фото. Мастер уточнит цену чистки и предложит время выезда.\u003c/p>\n            \u003ca class=\"button accent\" href=\"#calculate\">Узнать стоимость\u003c/a>\n          \u003c/div>\n          \u003cfigure class=\"hero-photo\">\n            \u003cimg src=\"https://images.pexels.com/photos/27176672/pexels-photo-27176672.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1280\" width=\"1280\" height=\"853\" fetchpriority=\"high\" alt=\"Чистка обивки дивана пылесосом\">\n          \u003c/figure>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection class=\"services-section\" id=\"services\" aria-labelledby=\"services-title\">\n        \u003cdiv class=\"wrap\">\n          \u003cdiv class=\"section-head\">\u003ch2 id=\"services-title\">Что чистим\u003c/h2>\u003cp>Нажмите на карточку, чтобы подставить вариант в форму.\u003c/p>\u003c/div>\n          \u003cdiv class=\"services\">\u003ca class=\"service\" href=\"#calculate\" data-service=\"0\">\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003ch3>Прямой диван\u003c/h3>\u003cp>Сиденья, спинка и подлокотники\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003ch3>Угловой диван\u003c/h3>\u003cp>Включая угловую секцию\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003ch3>Кресло\u003c/h3>\u003cp>Обивка кресла\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003ca class=\"service\" href=\"#calculate\" data-service=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003ch3>Матрас\u003c/h3>\u003cp>Укажите размер и загрязнение\u003c/p>\u003cspan class=\"service-action\">Выбрать в расчёте\u003c/span>\u003c/a>\u003c/div>\n        \u003c/div>\n      \u003c/section>\n\n      \u003csection id=\"calculate\" class=\"section wrap calculator\" aria-labelledby=\"calculator-title\">\n        \u003cdiv class=\"section-head\">\n          \u003cdiv>\u003cp class=\"eyebrow\">Оценка стоимости\u003c/p>\u003ch2 id=\"calculator-title\">Что нужно почистить?\u003c/h2>\u003c/div>\n          \u003cp>Опишите мебель и загрязнение. По фото мастер сможет уточнить стоимость чистки и согласовать выезд.\u003c/p>\n        \u003c/div>\n        \u003cform class=\"form-card\" id=\"lead-form\">\n          \u003cdiv class=\"form-inputs form-options\">\n            \u003cfieldset id=\"service\">\n              \u003clegend>Выберите вариант\u003c/legend>\n              \u003cdiv class=\"options\">\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"0\" checked>\u003cspan class=\"symbol sash\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Прямой диван\u003c/strong>\u003csmall>Сиденья, спинка и подлокотники\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"1\">\u003cspan class=\"symbol seal\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Угловой диван\u003c/strong>\u003csmall>Включая угловую секцию\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"2\">\u003cspan class=\"symbol handle\" aria-hidden=\"true\">\u003c/span>\u003cspan>\u003cstrong>Кресло\u003c/strong>\u003csmall>Обивка кресла\u003c/small>\u003c/span>\u003c/label>\u003clabel class=\"option\">\u003cinput type=\"radio\" name=\"service\" value=\"3\">\u003cspan class=\"symbol other\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Матрас\u003c/strong>\u003csmall>Укажите размер и загрязнение\u003c/small>\u003c/span>\u003c/label>\u003c/div>\n            \u003c/fieldset>\n            \u003cdiv class=\"details-grid\">\u003clabel class=\"field\">Размер или число мест\u003cinput name=\"detail0\" maxlength=\"150\" placeholder=\"Например, 3 места\">\u003c/label>\u003clabel class=\"field\">Что нужно почистить\u003cinput name=\"detail1\" maxlength=\"150\" placeholder=\"Расскажите о пятнах или запахе\">\u003c/label>\u003clabel class=\"field\">Район\u003cinput name=\"detail2\" maxlength=\"150\" placeholder=\"Район или улица\">\u003c/label>\u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"summary\">\n            \u003cdiv class=\"diagram\">\u003cdiv class=\"diagram-grid\" aria-hidden=\"true\">\u003cimg src=\"https://images.pexels.com/photos/27176672/pexels-photo-27176672.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=480\" width=\"480\" height=\"320\" alt=\"\" loading=\"lazy\">\u003c/div>\u003cp id=\"diagram-label\">Прямой диван\u003c/p>\u003c/div>\u003cdiv class=\"price\">\n              \u003ch3>Предварительная оценка\u003c/h3>\n              \u003cp class=\"sum-price\" id=\"estimate\" aria-live=\"polite\">По фото\u003c/p>\n              \u003cp class=\"sum-details\">Цена зависит от размера мебели, обивки и загрязнений.\u003c/p>\n            \u003c/div>\n          \u003c/div>\n\n          \u003cdiv class=\"form-inputs form-contact\">\n            \u003ch3>Как с вами связаться\u003c/h3>\n            \u003clabel class=\"field\">Телефон\n              \u003cinput name=\"phone\" id=\"phone\" type=\"tel\" autocomplete=\"tel\" inputmode=\"tel\" value=\"+7\" placeholder=\"+7 900 000-00-00\" required>\n            \u003c/label>\n            \u003cbutton type=\"button\" id=\"fill-demo\" class=\"text-button demo-only\">Подставить пример\u003c/button>\n            \n          \u003c/div>\n\n          \u003cdiv class=\"form-actions\">\n            \u003cdiv class=\"photo-feature\">\n              \u003clabel class=\"attach\" for=\"photo\">\u003cspan class=\"attach-icon\" aria-hidden=\"true\">＋\u003c/span>\u003cspan>\u003cstrong>Приложить фото\u003c/strong>\u003csmall id=\"photo-label\">JPG, PNG или WebP до 4 МБ\u003c/small>\u003c/span>\u003c/label>\n              \u003cinput class=\"visually-hidden\" id=\"photo\" name=\"photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\">\n              \u003cdiv id=\"photo-box\" class=\"photo-box\" hidden>\u003cimg id=\"photo-preview\" alt=\"Прикреплённое фото\">\u003cbutton id=\"remove-photo\" type=\"button\" class=\"text-button\">Удалить фото\u003c/button>\u003c/div>\n            \u003c/div>\n            \u003cp class=\"demo-note demo-only\">Демо. Данные остаются в браузере.\u003c/p>\n            \u003cbutton type=\"submit\" class=\"button dark\" id=\"submit\" disabled>Показать пример заявки\u003c/button>\n            \u003cp class=\"form-feedback\" id=\"feedback\" role=\"status\" hidden>\u003c/p>\n            \u003cnoscript>\u003cp class=\"form-help\">Для расчёта и отправки заявки включите JavaScript.\u003c/p>\u003c/noscript>\n          \u003c/div>\n        \u003c/form>\n\n        \u003csection class=\"demo-panel demo-only\" id=\"message-preview\" aria-labelledby=\"demo-title\" hidden>\n          \u003ch2 id=\"demo-title\">Пример заявки в Telegram\u003c/h2>\n          \u003cp>Так будет выглядеть сообщение мастеру.\u003c/p>\n          \u003cdiv class=\"notification\">\u003cpre id=\"message-text\">\u003c/pre>\u003cimg id=\"message-photo\" alt=\"Фото в тестовой заявке\" hidden>\u003c/div>\n        \u003c/section>\n      \u003c/section>\n\n      \u003csection id=\"questions\" class=\"section wrap questions\" aria-labelledby=\"questions-title\">\n        \u003ch2 id=\"questions-title\">Частые вопросы\u003c/h2>\n        \u003cdiv>\n          \u003cdetails>\u003csummary>От чего зависит окончательная цена?\u003c/summary>\u003cp>От размера мебели, обивки и загрязнений.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Что происходит после заявки?\u003c/summary>\u003cp>В рабочей версии мастер получит заявку в Telegram и сможет связаться с вами.\u003c/p>\u003c/details>\n          \u003cdetails>\u003csummary>Обязательно прикладывать фото?\u003c/summary>\u003cp>Фото помогает оценить работу. В демо его можно пропустить.\u003c/p>\u003c/details>\n        \u003c/div>\n      \u003c/section>\n    \u003c/div>\n\n\u003c/main>\u003cfooter class=\"footer\">\u003cdiv class=\"wrap\">\u003cspan>Химчистка мебели\u003c/span>\u003cspan class=\"demo-only\">Демонстрационная версия\u003c/span>\u003c/div>\u003c/footer>","name":"Химчистка мебели","options":["Прямой диван","Угловой диван","Кресло","Матрас"],"fields":[{"label":"Размер или число мест","example":"3 места"},{"label":"Что нужно почистить","example":"Пятно от кофе на сиденье"},{"label":"Район","example":"Центральный"}],"theme":{"night":"#223846","accent":"#aee3e7","paper":"#eef4f4","line":"#d0dbde","active":"#246378","position":"center 50%"}}};
-const niche = new URLSearchParams(location.search).get('service');
-if (Object.hasOwn(windowPages, niche)) {
-  const page = windowPages[niche];
-  document.querySelector('style').textContent = "\n:root {\n  color-scheme: light;\n  font-family: \"Segoe UI\", Arial, sans-serif;\n  --ink: #242a2b;\n  --muted: #58616a;\n  --night: #202a31;\n  --night-text: #faf2e6;\n  --paper: #f6f2e9;\n  --panel: #fffdf8;\n  --line: #dcd5c9;\n  --active: #a54427;\n  --accent: #ffab79;\n  background: var(--paper);\n  color: var(--ink);\n}\n\n*, *::before, *::after { box-sizing: border-box; }\nhtml { scroll-behavior: smooth; }\nbody { margin: 0; min-width: 280px; }\n[hidden], [data-submit-mode=\"demo\"] .live-only, [data-submit-mode=\"live\"] .demo-only, [data-uploads=\"false\"] .photo-feature { display: none !important; }\nbutton, input, textarea { font: inherit; }\nbutton { cursor: pointer; }\nbutton:disabled { cursor: default; opacity: .6; }\na { color: inherit; }\nfigure, p, h1, h2, h3, dl, dd { margin: 0; }\n:focus-visible { outline: 3px solid #b14c28; outline-offset: 4px; }\n.wrap { width: min(1260px, calc(100% - 72px)); margin-inline: auto; }\n.top, .hero { color: var(--night-text); background: var(--night); }\n.header { min-height: 78px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }\n.brand { display: inline-flex; align-items: center; justify-self: start; gap: 11px; text-decoration: none; font-weight: 750; line-height: 1.02; letter-spacing: -.035em; }\n.mark { display: inline-block; width: 33px; height: 33px; border: 1px solid #ffb385; border-radius: 7px; position: relative; }\n.mark::before, .mark::after { content: \"\"; position: absolute; inset: 6px; border: 1.5px solid #ffb385; border-radius: 1px; }\n.mark::after { inset: 6px auto 6px 50%; border-width: 0 0 0 1.5px; }\n.header nav { display: flex; align-items: center; gap: clamp(14px, 3vw, 44px); }\n.header nav a { color: #dfd6c9; text-decoration: none; font-weight: 600; }\n.header nav a:hover { color: white; text-decoration: underline; text-underline-offset: 4px; }\n.header-cta { justify-self: end; }\n.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 11px 19px; border: 1px solid transparent; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 740; line-height: 1.25; }\n.button.accent { color: #222928; background: var(--accent); }\n.button.accent:hover { background: #ffc19b; }\n.button.dark { background: var(--night); color: #fff7ef; }\n.button.dark:hover:not(:disabled) { background: #364853; }\n.hero { padding: 15px 0 clamp(25px, 4vw, 52px); }\n.hero-inner { display: grid; grid-template-columns: .93fr 1.07fr; align-items: stretch; min-height: clamp(475px, 45vw, 630px); border-top: 1px solid #485056; }\n.hero-copy { padding: clamp(35px, 6.5vw, 92px) clamp(22px, 5vw, 77px) clamp(30px, 6vw, 85px) 0; align-self: center; }\n.eyebrow { display: flex; gap: 8px; align-items: center; color: var(--active); font-size: .91rem; font-weight: 770; letter-spacing: .065em; text-transform: uppercase; }\n.hero .eyebrow { color: #ffb487; margin-bottom: 22px; }\n.pin { width: 9px; height: 9px; display: inline-block; border-radius: 50%; background: currentColor; }\nh1 { font-size: clamp(3.5rem, 7.6vw, 7.55rem); font-weight: 735; line-height: .91; letter-spacing: -.085em; }\nh1 span { color: var(--accent); }\n.lede { margin: 26px 0; max-width: 34ch; color: #e0d8cd; font-size: clamp(1.03rem, 1.75vw, 1.24rem); line-height: 1.55; }\n.hero-photo { position: relative; border-radius: 0 0 17px 17px; overflow: hidden; background: #a69d84; }\n.hero-photo img { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 59% 50%; }\n.section { padding-block: clamp(52px, 8vw, 105px); scroll-margin-top: 15px; }\n.section-head { display: flex; justify-content: space-between; align-items: end; gap: 20px 38px; margin-bottom: clamp(20px, 3.5vw, 38px); }\n.section-head .eyebrow { margin-bottom: 11px; }\nh2 { font-size: clamp(2.1rem, 4.9vw, 4.8rem); line-height: .99; font-weight: 730; letter-spacing: -.067em; }\n.section-head > p, .receipt-detail { max-width: 32ch; color: var(--muted); font-size: 1.035rem; line-height: 1.5; }\n\n.form-card { display: grid; grid-template-columns: 1.13fr .87fr; grid-template-areas: \"options summary\" \"contact actions\"; gap: 0; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel); }\n.form-inputs, .form-actions { padding: clamp(18px, 3.3vw, 47px); min-width: 0; }\n.form-options { grid-area: options; }\n.form-contact { grid-area: contact; border-top: 1px solid var(--line); }\n.form-contact h3, fieldset legend { font-size: 1.14rem; font-weight: 740; margin-bottom: 16px; }\nfieldset { min-width: 0; border: 0; padding: 0; margin: 0; }\n.options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }\n.option { min-width: 0; position: relative; display: grid; align-items: start; grid-template-columns: 29px minmax(0, 1fr); gap: 8px; border: 1px solid var(--line); border-radius: 10px; min-height: 85px; padding: 13px 10px; cursor: pointer; }\n.option strong, .option small { display: block; }\n.option strong { font-weight: 730; line-height: 1.17; }\n.option small, .attach small { margin-top: 4px; color: var(--muted); font-size: .84rem; line-height: 1.3; }\n.option:hover { background: #f6ede2; }\n.option:has(input:checked) { background: #fff0e5; border-color: #c36b43; box-shadow: inset 0 0 0 1px #c36b43; }\n.option:has(input:focus-visible), .attach:focus-within { outline: 3px solid #b14c28; outline-offset: 3px; }\n.option input, .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; padding: 0; margin: 0; border: 0; }\n.symbol { display: block; width: 26px; height: 26px; position: relative; color: var(--active); border: 1.5px solid currentColor; border-radius: 5px; }\n.symbol::before, .symbol::after { position: absolute; content: \"\"; }\n.sash::before { inset: 3px 3px 3px 7px; transform: skewY(-10deg); border: 1.5px solid currentColor; }\n.seal::before { inset: 4px; border: 1px dashed currentColor; border-radius: 2px; }\n.handle::before { height: 13px; width: 1.5px; left: 7px; top: 5px; background: currentColor; }\n.handle::after { height: 1.5px; width: 11px; left: 7px; top: 11px; background: currentColor; }\n.other { text-align: center; line-height: 23px; font-weight: 750; }\n.quantity-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 18px; font-weight: 650; }\n.stepper { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; align-items: center; background: var(--paper); }\n.stepper button { min-width: 43px; min-height: 42px; border: 0; background: transparent; color: var(--ink); font-size: 1.34rem; }\n.stepper button:hover:not(:disabled) { background: #efdfce; }\n.stepper input { width: 37px; appearance: textfield; -moz-appearance: textfield; padding: 0; border: 0; background: transparent; color: var(--ink); text-align: center; }\n.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { appearance: none; }\n.summary { grid-area: summary; background: var(--night); color: var(--night-text); display: flex; flex-direction: column; min-width: 0; }\n.diagram { display: flex; flex: 1; flex-direction: column; justify-content: center; padding: clamp(15px, 2.7vw, 32px) clamp(14px, 3vw, 36px) 12px; }\n.diagram-grid { width: 100%; min-height: 127px; display: grid; place-items: center; background: repeating-linear-gradient(90deg, transparent 0 22px, #69737a38 22px 23px), repeating-linear-gradient(0deg, transparent 0 22px, #69737a38 22px 23px); }\n.window-frame { width: min(227px, 83%); aspect-ratio: 1.66; position: relative; border: 6px solid #cdd3cd; background: #364955; box-shadow: 0 0 0 1px #899b9d; }\n.pane { position: absolute; top: 6px; bottom: 6px; border: 3px solid #bbc6c0; background: linear-gradient(130deg, #405966, #536b76); }\n.pane-static { left: 6px; width: 39%; }\n.pane-moving { right: 6px; width: calc(61% - 15px); }\n.window-handle { position: absolute; width: 10px; height: 23px; top: 42%; left: 3px; background: #cdd3cd; border-radius: 3px; }\n.window-handle::after { content: \"\"; display: block; position: absolute; width: 13px; height: 4px; top: 8px; left: 3px; background: inherit; border-radius: 2px; }\n.window-seal { position: absolute; z-index: 1; inset: 1px; border: 2px dashed transparent; pointer-events: none; }\n.focus-point { position: absolute; width: 13px; height: 13px; bottom: 1px; right: 5px; border: 2px solid #252d31; background: var(--accent); border-radius: 50%; z-index: 2; box-shadow: 0 0 0 3px #ffab7955; }\n.diagram[data-part=\"draft\"] .window-seal { border-color: var(--accent); }\n.diagram[data-part=\"draft\"] .focus-point { right: 2px; top: 2px; bottom: auto; }\n.diagram[data-part=\"handle\"] .window-handle { background: var(--accent); }\n.diagram[data-part=\"handle\"] .focus-point { left: 43%; top: 49%; bottom: auto; right: auto; }\n.diagram[data-part=\"other\"] .focus-point { display: none; }\n.diagram > p { margin-top: 8px; color: #efbda6; font-size: .875rem; line-height: 1.4; }\n.price { padding: 12px clamp(14px, 3vw, 36px) clamp(19px, 3vw, 33px); }\n.price h3 { margin-bottom: 6px; font-size: .9rem; font-weight: 630; color: #e9d9ca; }\n.sum-price { font-size: clamp(1.74rem, 3.5vw, 3rem); font-weight: 745; font-variant-numeric: tabular-nums; line-height: 1.03; letter-spacing: -.06em; overflow-wrap: anywhere; }\n.sum-details { margin-top: 7px; color: #ded6c7; font-size: .87rem; line-height: 1.34; }\n.form-actions { grid-area: actions; border-top: 1px solid var(--line); background: #f5eee3; }\n.field { display: block; margin-bottom: 12px; font-size: .94rem; font-weight: 650; line-height: 1.3; }\n.field input, .field textarea { display: block; width: 100%; margin-top: 6px; border: 1px solid #c9c0b3; border-radius: 8px; background: #fffdf9; padding: 10px 11px; color: var(--ink); font-size: 1rem; font-weight: 400; }\n.field input { min-height: 44px; }\n.field textarea { resize: vertical; }\n.field input::placeholder, .field textarea::placeholder { color: #697176; }\n.text-button { border: none; background: none; padding: 0; color: var(--active); text-align: left; text-decoration: underline; text-underline-offset: 4px; font-size: .91rem; font-weight: 650; }\n.extra-fields { margin-top: 13px; }\n.extra-fields summary { color: var(--active); font-weight: 650; cursor: pointer; font-size: .94rem; }\n.extra-fields[open] summary { margin-bottom: 12px; }\n.attach { display: flex; gap: 10px; align-items: center; border: 1px dashed #aa8e7c; border-radius: 9px; padding: 10px; cursor: pointer; }\n.photo-feature:has(#photo:focus-visible) .attach { outline: 3px solid #b14c28; outline-offset: 3px; }\n.attach-icon { min-width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; background: #ffdfc8; color: #7e3b22; }\n.attach strong, .attach small { display: block; }\n.attach small { overflow-wrap: anywhere; }\n.photo-box { display: flex; align-items: center; gap: 12px; margin-top: 10px; }\n.photo-box img, .notification img { width: 70px; height: 54px; display: block; border-radius: 6px; object-fit: cover; }\n.demo-note, .form-help { margin: 11px 0; color: var(--muted); font-size: .88rem; line-height: 1.4; }\n.form-actions .button { width: 100%; }\n.form-feedback { margin: 10px 0; padding: 10px; border-radius: 7px; font-size: .92rem; line-height: 1.4; background: #dcebd9; color: #28503a; }\n.form-feedback[data-kind=\"error\"] { background: #f6dfd8; color: #743e30; }\n.demo-panel { margin-top: clamp(34px, 6vw, 73px); scroll-margin-top: 14px; }\n.demo-panel h2 { font-size: clamp(2rem, 4.2vw, 3.6rem); }\n.demo-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }\n.notification, .visit-card { min-width: 0; padding: clamp(15px, 2.8vw, 30px); border: 1px solid var(--line); border-radius: 13px; background: var(--panel); }\n.notification h3, .visit-card h3 { margin-bottom: 13px; }\n.notification pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; font: 1rem/1.55 \"Segoe UI\", Arial, sans-serif; color: var(--ink); }\n.notification img { margin-top: 12px; width: min(200px, 100%); height: auto; max-height: 120px; }\n.services-section { background: #eee7da; padding-block: clamp(30px, 5vw, 65px); scroll-margin-top: 15px; }\n.services-section h2 { font-size: clamp(2rem, 3.9vw, 3.45rem); }\n.services { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }\n.service { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(13px, 2vw, 23px); border: 1px solid var(--line); border-radius: 13px; background: var(--panel); text-decoration: none; }\n.service:hover { border-color: var(--active); }\n.service h3 { margin: 10px 0 5px; font-size: clamp(1rem, 1.5vw, 1.23rem); line-height: 1.2; }\n.service p { margin-bottom: 12px; color: var(--muted); font-size: .94rem; line-height: 1.4; }\n.service-action { margin-top: auto; color: var(--active); font-size: .875rem; font-weight: 670; }\n.service:hover .service-action { text-decoration: underline; text-underline-offset: 4px; }\n.questions { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(20px, 5vw, 64px); }\n.questions details { padding: 15px 0; border-bottom: 1px solid var(--line); }\n.questions details:first-child { border-top: 1px solid var(--line); }\n.questions summary { cursor: pointer; font-weight: 650; }\n.questions details p { margin-top: 8px; color: var(--muted); line-height: 1.48; }\n.receipt { max-width: 690px; min-height: 60vh; }\n.receipt h2 { margin: 10px 0 14px; }\n.receipt-detail { margin-bottom: 18px; }\n.receipt-values { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 19px; }\n.receipt-values div { padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }\n.receipt-values dt { color: var(--muted); font-size: .87rem; }\n.receipt-values dd { margin-top: 4px; font-weight: 750; }\n.receipt .visit-card { margin: 15px 0; }\n.footer { border-top: 1px solid var(--line); }\n.footer .wrap { display: flex; justify-content: space-between; gap: 9px; padding-block: 20px; color: var(--muted); font-size: .9rem; }\n\n@media (prefers-color-scheme: dark) {\n  :root { color-scheme: dark; --ink: #f3ede4; --muted: #c7c0b6; --paper: #192025; --panel: #252e34; --line: #505356; --active: #ffb487; }\n  .services-section { background: #20282c; }\n  .option:hover, .stepper button:hover:not(:disabled) { background: #34414a; }\n  .option:has(input:checked) { background: #49362c; }\n  .field input, .field textarea { color: var(--ink); background: #1a2328; border-color: #62666a; }\n  .field input::placeholder, .field textarea::placeholder { color: #bdb9af; }\n  .form-actions { background: #2d3539; }\n  .button.dark { color: #252a2a; background: var(--accent); }\n  .button.dark:hover:not(:disabled) { background: #ffc19b; }\n  .form-feedback { background: #394838; color: #e6f5df; }\n  .form-feedback[data-kind=\"error\"] { background: #513631; color: #ffe4da; }\n}\n\n@media (max-width: 940px) {\n  .wrap { width: calc(100% - 44px); }\n  h1 { font-size: clamp(3.3rem, 8vw, 5.95rem); }\n  .hero-inner { min-height: 405px; }\n  .hero-copy { padding-block: 36px; }\n  .section-head > p { max-width: 30ch; }\n}\n\n@media (max-width: 720px) {\n  .wrap { width: calc(100% - 30px); }\n  .header { min-height: 66px; grid-template-columns: 1fr 1fr; gap: 10px; }\n  .header nav { display: none; }\n  .header .button { min-height: 40px; padding: 8px 10px; font-size: .87rem; }\n  .hero { padding-top: 4px; }\n  .hero-inner { grid-template-columns: 1fr; min-height: auto; gap: 3px; }\n  .hero-copy { padding: 28px 0 18px; }\n  .hero .eyebrow { margin-bottom: 13px; }\n  .lede { margin: 16px 0; }\n  .hero-photo { min-height: clamp(170px, 53vw, 320px); border-radius: 10px; }\n  .section { padding-block: 42px; }\n  .section-head { display: grid; gap: 10px; margin-bottom: 18px; }\n  .form-card { grid-template-columns: minmax(0, 1fr); grid-template-areas: \"options\" \"summary\" \"contact\" \"actions\"; }\n  .form-inputs, .form-actions { padding: 16px; }\n  .diagram { padding: 10px 14px 4px; }\n  .diagram-grid { min-height: 110px; }\n  .window-frame { width: min(163px, 75%); }\n  .form-contact { border-top: none; }\n  .demo-layout, .questions { grid-template-columns: 1fr; }\n  .services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }\n  .footer .wrap { font-size: .82rem; }\n}\n\n@media (max-width: 360px) {\n  h1 { font-size: clamp(2.78rem, 14vw, 3.3rem); }\n  .option { grid-template-columns: 1fr; padding: 8px; }\n  .option small { font-size: .81rem; }\n  .service { padding: 10px; }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  html { scroll-behavior: auto; }\n}\n\n\n.hero-photo img { object-position: var(--position); }\n.hero .eyebrow, .diagram > p { color: var(--accent); }\n.mark, .mark::before, .mark::after { border-color: var(--accent); }\n.button.accent:hover { background: color-mix(in srgb, var(--accent) 85%, white); }\n.option:hover, .option:has(input:checked), .attach-icon { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }\n.option:has(input:checked) { border-color: var(--active); box-shadow: inset 0 0 0 1px var(--active); }\n.services-section, .form-actions { background: color-mix(in srgb, var(--paper) 94%, var(--active)); }\n.details-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 18px; }\n.field select { display: block; width: 100%; min-height: 44px; margin-top: 6px; padding: 10px; border: 1px solid #c9c0b3; border-radius: 8px; background: #fffdf9; color: var(--ink); font: inherit; font-weight: 400; }\n.diagram-grid img { display: block; width: min(100%, 340px); height: clamp(128px,18vw,235px); object-fit: cover; border-radius: 7px; }\n.demo-panel > p { margin: 12px 0; }\n@media (max-width: 460px) { .details-grid { grid-template-columns: 1fr; } }\n";
-  document.body.innerHTML = page.html;
-  document.title = page.name + ' — демо заявки';
-  for (const [key, value] of Object.entries(page.theme)) document.documentElement.style.setProperty('--' + key, value);
-
-  const get = id => document.getElementById(id);
-  const form = get('lead-form');
-  const phone = get('phone');
-  const photo = get('photo');
-  const messagePhoto = get('message-photo');
-  const radios = Array.from(form.querySelectorAll('[name="service"]'));
-  const inputs = page.fields.map((field, index) => form.elements.namedItem('detail' + index));
-  let photoUrl;
-
-    function normalizePhone(value) {
-    if (typeof value !== "string" || value.length > 24 || !/^\+?[\d ()-]+$/.test(value)) return null;
-    const digits = value.replace(/\D/g, "");
-    if (value.startsWith("+")) return /^7\d{10}$/.test(digits) ? `+${digits}` : null;
-    if (digits.length === 10) return `+7${digits}`;
-    if (digits.length === 11 && /^[78]/.test(digits)) return `+7${digits.slice(1)}`;
-    return null;
-  }
-  function formatPhoneInput() {
-  const raw = phone.value;
-  if (raw === "+") return;
-  const digits = raw.replace(/\D/g, "");
-  if (!digits) {
-    phone.value = "";
-    return;
-  }
-
-  const hasPrefix = raw.trimStart().startsWith("+7") || (digits.length > 10 && /^[78]/.test(digits));
-  const prefixLength = Number(hasPrefix);
-  const national = digits.slice(prefixLength, prefixLength + 10);
-  const formatted = `+7${national}`;
-  if (raw === formatted) return;
-
-  const digitsBeforeCaret = raw.slice(0, phone.selectionStart ?? raw.length).replace(/\D/g, "").length;
-  const caret = 2 + Math.max(0, Math.min(national.length, digitsBeforeCaret - prefixLength));
-  phone.value = formatted;
-  phone.setSelectionRange(caret, caret);
-}
-  phone.addEventListener("beforeinput", (event) => {
-  const { value, selectionStart: start, selectionEnd: end } = phone;
-  if (!value.startsWith("+7") || value.length <= 2 || (start === 0 && end === value.length)) return;
-  if (event.inputType === "deleteContentBackward" && start === end && start <= 2) {
-    event.preventDefault();
-    return;
-  }
-  if (start < 2) phone.setSelectionRange(2, Math.max(2, end));
-});
-  phone.addEventListener('input', () => {
-    formatPhoneInput();
-    if (!phone.value) phone.value = '+7';
-    phone.setCustomValidity('');
-  });
-
-  const selectedOption = () => page.options[Number(form.elements.service.value)];
-  const updateChoice = () => { get('diagram-label').textContent = selectedOption(); };
-  for (const radio of radios) radio.addEventListener('change', updateChoice);
-  for (const card of document.querySelectorAll('.service[data-service]')) {
-    card.addEventListener('click', () => {
-      radios[Number(card.dataset.service)].checked = true;
-      updateChoice();
-    });
-  }
-
-  function showFeedback(message, kind = '') {
-    const feedback = get('feedback');
-    feedback.textContent = message;
-    feedback.dataset.kind = kind;
-    feedback.hidden = !message;
-  }
-
-  function clearPhoto() {
-    if (photoUrl) URL.revokeObjectURL(photoUrl);
-    photoUrl = undefined;
-    for (const image of [get('photo-preview'), messagePhoto]) image.removeAttribute('src');
-    messagePhoto.hidden = true;
-    get('photo-box').hidden = true;
-    get('photo-label').textContent = 'JPG, PNG или WebP до 4 МБ';
-  }
-
-  photo.addEventListener('change', () => {
-    clearPhoto();
-    showFeedback('');
-    const file = photo.files[0];
-    if (!file) return;
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4 * 1024 * 1024) {
-      photo.value = '';
-      showFeedback('Выберите JPG, PNG или WebP до 4 МБ.', 'error');
-      return;
-    }
-    photoUrl = URL.createObjectURL(file);
-    get('photo-preview').src = photoUrl;
-    get('photo-label').textContent = file.name;
-    get('photo-box').hidden = false;
-  });
-
-  get('remove-photo').addEventListener('click', () => {
-    photo.value = '';
-    clearPhoto();
-    photo.focus();
-  });
-
-  get('fill-demo').addEventListener('click', () => {
-    radios[0].checked = true;
-    updateChoice();
-    for (const [index, input] of inputs.entries()) input.value = page.fields[index].example;
-    phone.value = '+79000000000';
-    phone.setCustomValidity('');
-    showFeedback('');
-  });
-
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const number = normalizePhone(phone.value);
-    if (!number) {
-      phone.setCustomValidity('Введите 10 цифр после +7.');
-      phone.reportValidity();
-      return;
-    }
-    const lines = ['Новая заявка · ' + page.name, '', page.type + ': ' + selectedOption()];
-    for (const [index, input] of inputs.entries()) {
-      const value = input.value.trim();
-      if (value) lines.push(page.fields[index].label + ': ' + value);
-    }
-    lines.push('Телефон: ' + number);
-    if (photoUrl) {
-      lines.push('Фото: ' + photo.files[0].name);
-      messagePhoto.src = photoUrl;
-    }
-    messagePhoto.hidden = !photoUrl;
-    get('message-text').textContent = lines.join('\n');
-    get('message-preview').hidden = false;
-    showFeedback('Демо-заявка сформирована.', 'success');
-    get('demo-title').focus();
-  });
-
-  get('demo-title').tabIndex = -1;
-  get('submit').disabled = false;
-  if (location.hash) get(location.hash.slice(1))?.scrollIntoView();
-} else {
+  const priorityNiches = {"removal":{"name":"Вывоз вещей и мебели","title":"Старую мебель пора вывезти.","description":"Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.","image":4246098,"alt":"Диван и коробки с вещами в комнате","position":"center 50%","palette":["#24603b","#e8f2e8","#183627"],"type":"Что вывезти","choices":[["Диван и кресла","Мягкая мебель и матрасы"],["Шкафы","Шкафы и стеллажи"],["Столы и стулья","Столы, стулья и комоды"],["Несколько вещей","Можно указать список"]],"note":"На стоимость влияют объём вещей, этаж и наличие лифта.","fields":[{"label":"Список вещей","example":"Диван и кресло","placeholder":"Например, диван и кресло","wide":true,"optional":true},{"label":"Адрес или район","example":"Советский район","placeholder":"Район или улица","wide":false},{"label":"Этаж","example":"5","placeholder":"Например, 5","wide":false},{"label":"Лифт","options":["Нет лифта","Пассажирский","Грузовой"],"example":"Нет лифта"}]},"upholstery":{"name":"Перетяжка мебели","title":"Обновите любимый диван.","description":"Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.","image":4846097,"alt":"Мягкий диван с декоративными подушками","position":"center 55%","palette":["#943e2e","#f8eae5","#3b2626"],"type":"Тип мебели","choices":[["Угловой диван","Включая угловую секцию"],["Прямой диван","Сиденья, спинка, подлокотники"],["Кресло","Обивка кресла"],["Стулья и другое","Сиденья и спинки"]],"note":"Мастер оценивает работу по размерам, ткани и фотографии.","fields":[{"label":"Примерные размеры","example":"240 × 160 см","placeholder":"Можно написать «не знаю»","wide":false},{"label":"Что нужно заменить","example":"Обивку, каркас цел","placeholder":"Обивка, наполнитель или ремонт","wide":true},{"label":"Ткань или цвет","example":"Серо-зелёный велюр","placeholder":"Если уже выбрали","wide":false,"optional":true}]},"cleaning":{"name":"Химчистка мебели","title":"Диван снова будет чистым.","description":"Покажите диван и пятна на фото. Мастер уточнит цену чистки и предложит время выезда.","image":27176672,"alt":"Чистка обивки дивана пылесосом","position":"center 50%","palette":["#155b78","#e4f1f6","#17313f"],"type":"Тип мебели","choices":[["Прямой диван","Сиденья, спинка, подлокотники"],["Угловой диван","Включая угловую секцию"],["Кресло","Обивка кресла"],["Матрас","Размер и загрязнения"]],"note":"Мастер уточняет цену по размеру мебели, обивке и загрязнениям.","fields":[{"label":"Размер или число мест","example":"3 места","placeholder":"Например, 3 места","wide":false},{"label":"Что нужно почистить","example":"Пятно от кофе на сиденье","placeholder":"Расскажите о пятнах или запахе","wide":true},{"label":"Район","example":"Центральный","placeholder":"Район или улица","wide":false}]}};
+  const activeNiche = new URLSearchParams(location.search).get('service');
+  if (Object.hasOwn(priorityNiches, activeNiche)) {
+    mountServiceApp(priorityNiches[activeNiche]);
+  } else {
     const fields = {
       text: (label, example, placeholder = '', wide = false) => ({ label, example, placeholder, wide }),
       select: (label, options, example = options[0]) => ({ label, options, example }),
@@ -340,31 +312,10 @@ if (Object.hasOwn(windowPages, niche)) {
       }
     };
 
-    const landing = {
-      removal: {
-        label: 'Вывоз мебели', headline: 'Старую мебель', accent: 'пора вывезти.',
-        description: 'Покажите, что нужно забрать, и укажите этаж и лифт. Исполнитель оценит объём и скажет, сколько будет стоить вывоз.',
-        photo: 4246098, alt: 'Диван и коробки с вещами в комнате', position: 'center 50%',
-        palette: ['#25352c', '#d6e49e', '#f3f2e8', '#d7dbcb']
-      },
-      upholstery: {
-        label: 'Перетяжка мебели', headline: 'Обновите', accent: 'любимый диван.',
-        description: 'Приложите фото мебели, укажите размеры и расскажите, что хочется поменять. Мастер даст предварительную оценку.',
-        photo: 4846097, alt: 'Мягкий диван с декоративными подушками', position: 'center 55%',
-        palette: ['#3e2d2b', '#ffc19f', '#f7f0e9', '#dfd2c8']
-      },
-      cleaning: {
-        label: 'Выездная химчистка', headline: 'Диван снова', accent: 'будет чистым.',
-        description: 'Покажите диван и пятна на фото. Мастер уточнит цену чистки и предложит время выезда.',
-        photo: 27176672, alt: 'Чистка обивки дивана пылесосом', position: 'center 50%',
-        palette: ['#223846', '#aee3e7', '#eef4f4', '#d0dbde']
-      }
-    };
-
     const byId = id => document.getElementById(id);
     const selected = new URLSearchParams(location.search).get('service');
     if (Object.hasOwn(presets, selected)) {
-      showService(presets[selected], landing[selected]);
+      showService(presets[selected]);
     } else {
       byId('directory-page').hidden = false;
       for (const [id, preset] of Object.entries(presets)) {
@@ -376,52 +327,7 @@ if (Object.hasOwn(windowPages, niche)) {
       }
     }
 
-  function normalizePhone(value) {
-    if (typeof value !== "string" || value.length > 24 || !/^\+?[\d ()-]+$/.test(value)) return null;
-    const digits = value.replace(/\D/g, "");
-    if (value.startsWith("+")) return /^7\d{10}$/.test(digits) ? `+${digits}` : null;
-    if (digits.length === 10) return `+7${digits}`;
-    if (digits.length === 11 && /^[78]/.test(digits)) return `+7${digits.slice(1)}`;
-    return null;
-  }
-
-    function preparePhone(input) {
-      input.value = '+7';
-      input.addEventListener('input', () => {
-        const raw = input.value.trimStart();
-        const digits = raw.replace(/\D/g, '');
-        const explicit = raw.startsWith('+7');
-        const prefix = explicit || (digits.length > 10 && /^[78]/.test(digits));
-        const cursor = input.selectionStart ?? raw.length;
-        const before = raw.slice(0, cursor).replace(/\D/g, '').length;
-        const national = digits.slice(Number(prefix), Number(prefix) + 10);
-        input.value = '+7' + national;
-        const position = 2 + Math.max(0, Math.min(national.length, before - Number(prefix)));
-        input.setSelectionRange(position, position);
-        input.setCustomValidity('');
-      });
-    }
-
-    function showService(preset, details) {
-      if (details) {
-        const [night, accent, paper, line] = details.palette;
-        const style = document.documentElement.style;
-        for (const [key, value] of Object.entries({night, accent, paper, line, position: details.position})) {
-          style.setProperty('--' + key, value);
-        }
-        document.body.classList.add('tailored');
-        byId('hero-label').textContent = details.label;
-        byId('hero-title-accent').before(document.createTextNode(details.headline));
-        byId('hero-title-accent').textContent = details.accent;
-        byId('hero-description').textContent = details.description;
-        const image = byId('hero-image');
-        image.alt = details.alt;
-        image.src = 'https://images.pexels.com/photos/' + details.photo + '/pexels-photo-' + details.photo + '.jpeg?auto=compress&cs=tinysrgb&w=1280';
-        byId('service-hero').hidden = false;
-        byId('title').hidden = true;
-        byId('quote-title').textContent = preset.title;
-        byId('quote-title').hidden = false;
-      }
+    function showService(preset) {
       document.title = preset.name + ' — демо заявки';
       document.documentElement.style.setProperty('--ink', preset.colors[0]);
       document.documentElement.style.setProperty('--wash', preset.colors[1]);
@@ -448,7 +354,6 @@ if (Object.hasOwn(windowPages, niche)) {
           if (field.type === 'tel') {
             control.inputMode = 'tel';
             control.autocomplete = 'off';
-            if (details) preparePhone(control);
           }
         }
         control.required = !field.optional;
@@ -484,7 +389,6 @@ if (Object.hasOwn(windowPages, niche)) {
       byId('example').addEventListener('click', () => {
         for (const { field, control } of controls) {
           control.value = field.example || '';
-          if (field.type === 'tel' && details) control.setCustomValidity('');
         }
         renderMessage(true);
         byId('status').textContent = 'Пример подставлен. Поля можно изменить.';
@@ -492,11 +396,6 @@ if (Object.hasOwn(windowPages, niche)) {
       byId('form').addEventListener('submit', event => {
         event.preventDefault();
         for (const { field, control } of controls) {
-          if (field.type === 'tel' && details && !normalizePhone(control.value)) {
-            control.setCustomValidity('Введите 10 цифр после +7.');
-            control.reportValidity();
-            return;
-          }
           if (!field.optional && !control.value.trim()) {
             control.value = '';
             control.reportValidity();
@@ -508,7 +407,207 @@ if (Object.hasOwn(windowPages, niche)) {
         byId('preview-title').focus();
       });
     }
-}
+  }
+
+  function mountServiceApp(preset) {
+    document.body.replaceChildren(document.getElementById('service-app').content.cloneNode(true));
+    document.body.classList.add('service-app');
+    document.title = preset.name + ' — демо заявки';
+    const style = document.body.style;
+    const [accent, tint, hero] = preset.palette;
+    for (const [name, value] of Object.entries({accent, tint, hero, 'photo-position': preset.position})) {
+      style.setProperty('--' + name, value);
+    }
+
+    const get = id => document.getElementById(id);
+    function element(tag, text) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+    get('app-brand').textContent = preset.name;
+    get('app-title').textContent = preset.title;
+    get('app-lede').textContent = preset.description;
+    get('app-price-note').textContent = preset.note;
+    const heroImage = get('app-photo');
+    heroImage.src = 'https://images.pexels.com/photos/' + preset.image + '/pexels-photo-' + preset.image + '.jpeg?auto=compress&cs=tinysrgb&w=1280';
+    heroImage.alt = preset.alt;
+
+    const tabs = Array.from(document.querySelectorAll('.appnav button'));
+    const screens = ['app-service', 'app-details', 'app-receipt'].map(get);
+    const headings = ['service-title', 'details-title', 'receipt-title'].map(get);
+    let step = 0;
+    let detailsOpened = false;
+    let receiptReady = false;
+    let service = 0;
+    let photoUrl;
+
+    function updateTabs() {
+      tabs[1].disabled = !detailsOpened;
+      tabs[2].disabled = !receiptReady;
+      for (const [index, button] of tabs.entries()) {
+        if (index === step) button.setAttribute('aria-current', 'step');
+        else button.removeAttribute('aria-current');
+      }
+    }
+
+    function showStep(index) {
+      step = index;
+      updateTabs();
+      for (const [number, screen] of screens.entries()) screen.hidden = number !== index;
+      get('app-hero').hidden = index !== 0;
+      headings[index].focus({preventScroll: true});
+      window.scrollTo(0, 0);
+    }
+
+    for (const [index, button] of tabs.entries()) button.addEventListener('click', () => showStep(index));
+    get('app-next').addEventListener('click', () => {
+      detailsOpened = true;
+      showStep(1);
+    });
+    get('app-edit').addEventListener('click', () => showStep(1));
+
+    function invalidateReceipt() {
+      receiptReady = false;
+      updateTabs();
+    }
+
+    function selectService(index) {
+      service = index;
+      get('app-selection').textContent = preset.choices[index][0];
+      invalidateReceipt();
+    }
+
+    for (const [index, [title, note]] of preset.choices.entries()) {
+      const label = element('label');
+      label.className = 'appchoice';
+      const radio = element('input');
+      radio.type = 'radio';
+      radio.name = 'service';
+      radio.checked = index === 0;
+      radio.addEventListener('change', () => selectService(index));
+      const copy = element('span');
+      copy.append(element('strong', title), element('small', note));
+      label.append(radio, copy);
+      get('app-choices').append(label);
+    }
+    selectService(0);
+
+    const controls = preset.fields.map(field => {
+      const label = element('label', field.label + (field.optional ? ' (по желанию)' : ''));
+      label.className = field.wide ? 'applabel wide' : 'applabel';
+      const input = element(field.options ? 'select' : 'input');
+      if (field.options) {
+        input.add(new Option('Выберите вариант', ''));
+        for (const option of field.options) input.add(new Option(option, option));
+      } else {
+        input.type = 'text';
+        input.placeholder = field.placeholder;
+        input.maxLength = 150;
+      }
+      label.append(input);
+      get('app-fields').append(label);
+      return input;
+    });
+
+    const phone = get('app-tel');
+    function formatPhone() {
+      const raw = phone.value;
+      const digits = raw.replace(/\D/g, '');
+      const prefix = raw.trimStart().startsWith('+7') || (digits.length === 11 && /^[78]/.test(digits));
+      const number = digits.slice(Number(prefix), Number(prefix) + 10);
+      const position = Math.max(0, Math.min(number.length, raw.slice(0, phone.selectionStart ?? raw.length).replace(/\D/g, '').length - Number(prefix)));
+      const chunks = [number.slice(0, 3), number.slice(3, 6), number.slice(6, 8), number.slice(8)];
+      const formatted = chunks[0] + (chunks[1] ? ' ' + chunks[1] : '') + chunks.slice(2).filter(Boolean).map(chunk => '-' + chunk).join('');
+      if (formatted !== raw) {
+        phone.value = formatted;
+        let caret = 0;
+        let count = 0;
+        while (caret < formatted.length && count < position) {
+          if (/\d/.test(formatted[caret])) count++;
+          caret++;
+        }
+        phone.setSelectionRange(caret, caret);
+      }
+      phone.setCustomValidity('');
+      get('app-telephone').classList.toggle('has-number', Boolean(number.length));
+      return number;
+    }
+    phone.addEventListener('input', formatPhone);
+
+    const form = get('app-form');
+    form.addEventListener('input', invalidateReceipt);
+    form.addEventListener('change', invalidateReceipt);
+    get('app-example').addEventListener('click', () => {
+      for (const [index, field] of preset.fields.entries()) controls[index].value = field.example;
+      phone.value = '9000000000';
+      formatPhone();
+      invalidateReceipt();
+    });
+
+    const fileInput = get('app-file');
+    const error = get('app-file-error');
+    const receiptPhoto = get('app-receipt-photo');
+    function clearPhoto() {
+      if (photoUrl) URL.revokeObjectURL(photoUrl);
+      photoUrl = undefined;
+      get('app-thumb').removeAttribute('src');
+      receiptPhoto.removeAttribute('src');
+      receiptPhoto.hidden = true;
+      get('app-attachment').hidden = true;
+      get('app-file-label').textContent = 'JPG, PNG или WebP · до 4 МБ · по желанию';
+      error.hidden = true;
+    }
+
+    fileInput.addEventListener('change', () => {
+      clearPhoto();
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4 * 1024 * 1024) {
+        fileInput.value = '';
+        error.textContent = 'Выберите JPG, PNG или WebP размером до 4 МБ.';
+        error.hidden = false;
+        return;
+      }
+      photoUrl = URL.createObjectURL(file);
+      get('app-thumb').src = photoUrl;
+      get('app-file-label').textContent = file.name;
+      get('app-attachment').hidden = false;
+    });
+    get('app-file-remove').addEventListener('click', () => {
+      fileInput.value = '';
+      clearPhoto();
+      invalidateReceipt();
+      fileInput.focus();
+    });
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const number = formatPhone();
+      if (number.length !== 10) {
+        phone.setCustomValidity('Введите 10 цифр после +7.');
+        phone.reportValidity();
+        return;
+      }
+      const pairs = [[preset.type, preset.choices[service][0]]];
+      for (const [index, control] of controls.entries()) {
+        const value = control.value.trim();
+        if (value) pairs.push([preset.fields[index].label, value]);
+      }
+      pairs.push(['Телефон', '+7 ' + phone.value]);
+      const message = get('app-message');
+      message.replaceChildren();
+      for (const [label, value] of pairs) {
+        const row = element('div');
+        row.append(element('dt', label), element('dd', value));
+        message.append(row);
+      }
+      if (photoUrl) receiptPhoto.src = photoUrl;
+      receiptPhoto.hidden = !photoUrl;
+      receiptReady = true;
+      showStep(2);
+    });
+  }
   </script>
 </body>
 </html>
