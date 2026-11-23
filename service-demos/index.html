@@ -312,6 +312,34 @@
       }
     }
     @media(max-width:380px) { .clean-preference { grid-template-columns:1fr; } }
+
+    .clean-bundles { margin-top:20px; }
+    .clean-bundles h2 { margin:0 0 8px; font-size:1.15rem; }
+    #clean-bundle-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .clean-bundle {
+      display:flex; align-items:center; justify-content:space-between; gap:9px; width:100%; padding:11px 13px;
+      background:var(--surface); border:1px solid var(--line); color:var(--ink); text-align:left; border-radius:12px;
+    }
+    .clean-bundle:hover { border-color:var(--accent); background:#364337; }
+    .clean-bundle-content { min-width:0; }
+    .clean-bundle small { display:block; color:var(--muted); font-weight:500; margin-top:2px; }
+    .clean-bundle-price { color:var(--accent); white-space:nowrap; }
+    .clean-sharing { margin-top:12px; border-top:1px solid var(--line); padding-top:10px; }
+    .clean-sharing input, .master-reply textarea, .master-fields input { color:var(--ink); background:var(--background); border:1px solid var(--line); border-radius:9px; }
+    .clean-sharing input { margin-top:6px; }
+    .clean-share-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+    .clean-sharing p { color:var(--muted); font-size:.82rem; margin-top:5px; }
+    .clean-sharing p:empty { display:none; }
+    .master-reply { border-top:1px solid var(--line); padding-top:16px; margin-top:16px; }
+    .master-fields { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-block:10px; }
+    .master-reply textarea { font:inherit; padding:8px 10px; width:100%; resize:vertical; }
+    .master-reply button { margin-top:8px; }
+    .master-reply input::placeholder, .clean-preference input::placeholder { color:var(--muted); opacity:1; }
+    @media(max-width:540px) {
+      #clean-bundle-options { grid-template-columns:1fr; gap:7px; }
+      .clean-bundles { margin-top:15px; }
+      .master-fields { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -407,8 +435,19 @@
           <div class="appactions">
             <button type="button" class="appsecondary" id="app-edit">Изменить заявку</button>
             <button type="button" class="appsecondary" id="app-copy" hidden>Скопировать текст заявки</button>
+            <button type="button" class="appsecondary" id="app-master" aria-controls="app-master-reply" aria-expanded="false" hidden>Ответить как мастер</button>
           </div>
           <p class="app-copy-status" id="app-copy-status" role="status"></p>
+          <section class="master-reply" id="app-master-reply" aria-labelledby="master-reply-title" hidden>
+            <h3 id="master-reply-title">Ответ клиенту</h3>
+            <div class="master-fields">
+              <label class="applabel">Ваша оценка, ₽ <input id="master-price" type="number" inputmode="numeric" min="0" max="9999999" step="1" placeholder="Например, 3 500"></label>
+              <label class="applabel">Когда сможете приехать <input id="master-visit" type="text" maxlength="100" placeholder="Например, завтра около 18:30"></label>
+            </div>
+            <label class="applabel">Текст ответа <textarea id="master-message" rows="4" maxlength="500"></textarea></label>
+            <button type="button" class="appprimary" id="master-copy" hidden>Скопировать ответ</button>
+            <p id="master-status" class="app-copy-status" role="status"></p>
+          </section>
         </section>
         <aside class="appsummary" aria-labelledby="app-summary-title">
           <h2 id="app-summary-title">Ваша заявка</h2>
@@ -460,6 +499,10 @@
         </div>
       </section>
     </div>
+    <section class="clean-bundles" aria-labelledby="clean-bundles-title">
+      <h2 id="clean-bundles-title">Популярные сочетания</h2>
+      <div id="clean-bundle-options"></div>
+    </section>
   </template>
   <script>
 
@@ -865,6 +908,7 @@
       });
     }
 
+    const master = cleanTemplate ? mountMasterReply() : null;
     form.addEventListener('submit', event => {
       event.preventDefault();
       const number = formatPhone();
@@ -893,35 +937,87 @@
       }
       receiptPhotos.replaceChildren(...photos.map((photo,index) => photoTile(photo,index,false)));
       receiptPhotos.hidden = !photos.length;
+      master?.reset();
       receiptReady = true;
       showStep(2);
     });
   }
 
 
+
+  function mountMasterReply() {
+    const toggle = document.getElementById('app-master');
+    const panel = document.getElementById('app-master-reply');
+    const price = document.getElementById('master-price');
+    const time = document.getElementById('master-visit');
+    const message = document.getElementById('master-message');
+    const status = document.getElementById('master-status');
+    const copy = document.getElementById('master-copy');
+    const money = new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0});
+    toggle.hidden = false;
+
+    function refreshMessage() {
+      const parts = ['Здравствуйте! Спасибо за заявку на химчистку.'];
+      if (price.value && price.validity.valid) parts.push('Предварительная стоимость — ' + money.format(price.valueAsNumber) + '.');
+      else parts.push('Уточню стоимость по фото и деталям заявки.');
+      const visit = time.value.trim();
+      parts.push(visit ? 'Могу приехать: ' + visit + '. Вам подходит?' : 'Согласуем время выезда.');
+      message.value = parts.join(' ');
+      status.textContent = '';
+    }
+    for (const field of [price,time]) field.addEventListener('input',refreshMessage);
+    toggle.addEventListener('click',() => {
+      panel.hidden = !panel.hidden;
+      toggle.setAttribute('aria-expanded',String(!panel.hidden));
+      if (!panel.hidden) price.focus();
+    });
+    if (navigator.clipboard?.writeText) {
+      copy.hidden = false;
+      copy.addEventListener('click',async () => {
+        try {
+          await navigator.clipboard.writeText(message.value);
+          status.textContent = 'Ответ скопирован.';
+        } catch {
+          message.select();
+          status.textContent = 'Текст выделен. Скопируйте его вручную.';
+        }
+      });
+    }
+    return {
+      reset() {
+        price.value = '';
+        time.value = '';
+        panel.hidden = true;
+        toggle.setAttribute('aria-expanded','false');
+        refreshMessage();
+      }
+    };
+  }
+
   function addVisitPreference(form) {
     const group = document.createElement('div');
     group.className = 'clean-preference';
-    group.innerHTML = '<label class="applabel">Удобный день <input type="date"></label>' +
-      '<label class="applabel">Удобное время <select><option value="">Любое</option><option>Утро, 9:00–12:00</option>' +
-      '<option>День, 12:00–16:00</option><option>Вечер, 16:00–20:00</option></select></label>';
+    group.innerHTML = '<label class="applabel">Удобный день <select><option value="">Договоримся</option></select></label>' +
+      '<label class="applabel">Удобное время <input type="text" maxlength="80" placeholder="Например, после 18:00"></label>';
     form.querySelector('.appfields').after(group);
-    const date = group.querySelector('input');
-    const time = group.querySelector('select');
-    function localDateString(day) {
-      return [day.getFullYear(), String(day.getMonth()+1).padStart(2,'0'), String(day.getDate()).padStart(2,'0')].join('-');
-    }
-    date.min = localDateString(new Date());
+    const day = group.querySelector('select');
+    const time = group.querySelector('input');
     const formatter = new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long'});
+    const today = new Date();
+    for (let offset=0; offset<30; offset++) {
+      const date = new Date(today);
+      date.setDate(today.getDate()+offset);
+      const name = formatter.format(date);
+      const label = offset===0 ? 'Сегодня, ' + name : offset===1 ? 'Завтра, ' + name : name;
+      day.add(new Option(label,name));
+    }
     return {
       fillExample() {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate()+1);
-        date.value = localDateString(tomorrow);
-        time.selectedIndex = 2;
+        day.selectedIndex = 2;
+        time.value = 'После 18:00';
       },
       value() {
-        return [date.value ? formatter.format(new Date(date.value+'T12:00:00')) : '', time.value].filter(Boolean).join(' · ');
+        return [day.value,time.value.trim()].filter(Boolean).join(' · ');
       }
     };
   }
@@ -956,25 +1052,81 @@
     const draft = document.createElement('section');
     draft.className = 'clean-order';
     draft.setAttribute('aria-label', 'Состав заявки');
-    draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total" aria-live="polite"></strong>';
+    draft.innerHTML = '<p>Состав заявки</p><ul></ul><strong class="clean-order-total" aria-live="polite"></strong>' +
+      '<div class="clean-sharing"><label class="applabel">Ссылка на расчёт <input type="url" readonly></label>' +
+      '<div class="clean-share-actions"><button class="applink" type="button" hidden>Скопировать ссылку</button></div>' +
+      '<p>В ссылку входят только выбранные услуги.</p><p role="status"></p></div>';
     get('app-details').append(draft);
     const draftItems = draft.querySelector('ul');
-    const draftTotal = draft.querySelector('strong');
+    const draftTotal = draft.querySelector('.clean-order-total');
+    const sharePanel = draft.querySelector('.clean-sharing');
+    const shareField = sharePanel.querySelector('input');
+    const shareStatus = sharePanel.querySelector('[role="status"]');
+    const shareButton = sharePanel.querySelector('button');
+    const shareLimit = 24;
+    if (navigator.clipboard?.writeText) {
+      shareButton.hidden = false;
+      shareButton.addEventListener('click',async () => {
+        try {
+          await navigator.clipboard.writeText(shareField.value);
+          shareStatus.textContent = 'Ссылка скопирована.';
+        } catch {
+          shareField.select();
+          shareStatus.textContent = 'Ссылка выделена. Скопируйте её вручную.';
+        }
+      });
+    }
+    shareField.addEventListener('focus', () => shareField.select());
 
     function readCart() {
       try {
         const saved = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
         if (!Array.isArray(saved)) return [];
-        return saved.filter(item => item && Number.isInteger(item.kind) && catalog[item.kind]
-          && Number.isInteger(item.variant) && catalog[item.kind].variants[item.variant]
-          && typeof item.heavy === 'boolean' && Number.isInteger(item.quantity)
-          && item.quantity >= 1 && item.quantity <= limit);
+        return saved.filter(validItem);
       } catch {
         return [];
       }
     }
 
-    const cart = readCart();
+    function validItem(item) {
+      return Boolean(item && Number.isInteger(item.kind) && catalog[item.kind]
+        && Number.isInteger(item.variant) && catalog[item.kind].variants[item.variant]
+        && typeof item.heavy === 'boolean' && Number.isInteger(item.quantity)
+        && item.quantity >= 1 && item.quantity <= limit);
+    }
+    function readSharedCart() {
+      const url = new URL(location.href);
+      const value = url.searchParams.get('quote');
+      if (!value || value.length > shareLimit * 10) return null;
+      const rows = value.split('~');
+      if (rows.length > shareLimit || rows.some(row => !/^\d\.\d\.[01]\.\d{1,2}$/.test(row))) return null;
+      const items = rows.map(row => {
+        const [kind,variant,heavy,quantity] = row.split('.').map(Number);
+        return {kind,variant,heavy:Boolean(heavy),quantity};
+      });
+      if (!items.every(validItem)) return null;
+      url.searchParams.delete('quote');
+      history.replaceState(history.state,'',url);
+      return items;
+    }
+    function updateShare() {
+      const enabled = cart.length > 0 && cart.length <= shareLimit;
+      sharePanel.hidden = !enabled;
+      shareStatus.textContent = '';
+      if (!enabled) {
+        shareField.value = '';
+        shareField.removeAttribute('value');
+        return;
+      }
+      const url = new URL(location.href);
+      url.hash = '';
+      url.searchParams.set('quote',cart.map(({kind,variant,heavy,quantity}) => [kind,variant,Number(heavy),quantity].join('.')).join('~'));
+      shareField.value = url.href;
+      shareField.setAttribute('value',url.href);
+    }
+    const importedCart = readSharedCart();
+    const cart = importedCart ?? readCart();
+    if (importedCart) saveCart();
     const sameService = (first, second) => first.kind === second.kind && first.variant === second.variant && first.heavy === second.heavy;
     const rate = item => catalog[item.kind].variants[item.variant][1];
     const itemSize = item => catalog[item.kind].variants[item.variant][0];
@@ -1137,6 +1289,7 @@
       checkout.firstChild.textContent = cart.length ? 'К заявке · ' + money.format(total()) + ' ' : 'Перейти к заявке ';
       draftTotal.textContent = 'Предварительно ' + money.format(total());
       draftItems.replaceChildren(...cart.map(renderCartItem));
+      updateShare();
     }
 
     get('clean-add').addEventListener('click',() => {
@@ -1149,9 +1302,7 @@
         changeCart();
         actions.checkout();
       } else {
-        const duplicate = cart.find(entry => sameService(entry,item) && entry.quantity + item.quantity <= limit);
-        if (duplicate) duplicate.quantity += item.quantity;
-        else cart.push(item);
+        addToCart(item);
         changeCart();
       }
     });
@@ -1159,6 +1310,34 @@
       setEditing(null);
       actions.checkout();
     });
+    function addToCart(item) {
+      const duplicate = cart.find(entry => sameService(entry,item) && entry.quantity + item.quantity <= limit);
+      if (duplicate) duplicate.quantity += item.quantity;
+      else cart.push(item);
+    }
+
+    const bundles = [
+      {name:'Диван и кресло', note:'Прямой диван на 3 места + стандартное кресло', choices:[[0,1],[1,0]]},
+      {name:'Диван и матрас', note:'Прямой диван на 3 места + двуспальный матрас', choices:[[0,1],[2,1]]}
+    ];
+    for (const bundle of bundles) {
+      const items = bundle.choices.map(([kind,variant]) => ({kind,variant,heavy:false,quantity:1}));
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'clean-bundle';
+      button.innerHTML = '<span class="clean-bundle-content"><strong></strong><small></small></span><span class="clean-bundle-price"></span>';
+      button.querySelector('strong').textContent = bundle.name;
+      button.querySelector('small').textContent = bundle.note;
+      button.querySelector('.clean-bundle-price').textContent = money.format(items.reduce((sum,item) => sum + itemTotal(item),0)) + ' +';
+      button.addEventListener('click',() => {
+        if (editing) setEditing(null);
+        for (const item of items) addToCart({...item});
+        changeCart();
+        actions.checkout();
+      });
+      get('clean-bundle-options').append(button);
+    }
+
     checkout.addEventListener('click',actions.checkout);
     updateCart();
 
